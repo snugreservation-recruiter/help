@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Secure patient portal design for medical history and insurance payments."
+  />
+  <title>CareBridge Medical | Patient Portal</title>
+
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #0b5e58;
+      --primary-light: #dff7f4;
+      --secondary: #1d4ed8;
+      --ink: #16323c;
+      --muted: #64748b;
+      --line: #dbe5ea;
+      --surface: #ffffff;
+      --background: #f3f8fa;
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --warning: #b45309;
+      --warning-bg: #fef3c7;
+      --danger: #b91c1c;
+      --danger-bg: #fee2e2;
+      --shadow: 0 12px 30px rgba(15, 70, 76, 0.09);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: var(--background);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* Header */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 16px clamp(18px, 4vw, 60px);
+      color: white;
+      background: var(--primary);
+      box-shadow: 0 2px 14px rgba(7, 62, 58, 0.18);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--primary);
+      background: white;
+      font-size: 1.45rem;
+      font-weight: 900;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.93rem;
+    }
+
+    .secure-label {
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .logout-button {
+      padding: 9px 14px;
+      border: 1px solid white;
+      border-radius: 9px;
+      color: var(--primary);
+      background: white;
+      font-weight: 700;
+    }
+
+    .logout-button:hover {
+      color: white;
+      background: transparent;
+    }
+
+    /* Layout */
+    .portal-layout {
+      display: grid;
+      grid-template-columns: 255px minmax(0, 1fr);
+      min-height: calc(100vh - 72px);
+    }
+
+    .sidebar {
+      padding: 28px 18px;
+      border-right: 1px solid var(--line);
+      background: white;
+    }
+
+    .patient-summary {
+      padding: 18px;
+      margin-bottom: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      text-align: center;
+      background: #fbfefe;
+    }
+
+    .avatar {
+      display: grid;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      place-items: center;
+      border-radius: 50%;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), #23a49b);
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .patient-summary h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .patient-summary p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    .nav-menu {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav-button {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 13px 14px;
+      border: 0;
+      border-radius: 10px;
+      color: #3d5962;
+      background: transparent;
+      text-align: left;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      color: var(--primary-dark);
+      background: var(--primary-light);
+    }
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-help {
+      margin-top: 30px;
+      padding: 16px;
+      border-radius: 14px;
+      color: white;
+      background: #164e63;
+    }
+
+    .sidebar-help p {
+      margin: 0 0 10px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+
+    .sidebar-help a {
+      color: #bff8f0;
+      font-size: 0.87rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    /* Main */
+    .main-content {
+      padding: clamp(22px, 4vw, 48px);
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .page-heading h1 {
+      margin: 0;
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+    }
+
+    .page-heading p {
+      max-width: 670px;
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .date-label {
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      background: white;
+      font-size: 0.86rem;
+      white-space: nowrap;
+    }
+
+    .alert {
+      display: none;
+      margin-bottom: 22px;
+      padding: 14px 16px;
+      border: 1px solid #86efac;
+      border-radius: 12px;
+      color: #166534;
+      background: var(--success-bg);
+      font-weight: 700;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .card h2,
+    .card h3 {
+      margin: 0;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .card-title-row h2 {
+      font-size: 1.13rem;
+    }
+
+    .history-card {
+      grid-column: span 7;
+    }
+
+    .payment-card {
+      grid-column: span 5;
+    }
+
+    .appointments-card {
+      grid-column: span 7;
+    }
+
+    .quick-actions-card {
+      grid-column: span 5;
+    }
+
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .records-table th,
+    .records-table td {
+      padding: 14px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 0.91rem;
+    }
+
+    .records-table th {
+      color: var(--muted);
+      font-size: 0.77rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .records-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 6px 9px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .status-current {
+      color: #166534;
+      background: var(--success-bg);
+    }
+
+    .status-review {
+      color: #92400e;
+      background: var(--warning-bg);
+    }
+
+    .balance-box {
+      padding: 22px;
+      border-radius: 14px;
+      color: white;
+      background: linear-gradient(140deg, var(--secondary), #2563eb);
+    }
+
+    .balance-box span {
+      display: block;
+      opacity: 0.85;
+      font-size: 0.86rem;
+    }
+
+    .balance-box strong {
+      display: block;
+      margin: 6px 0;
+      font-size: 2.2rem;
+    }
+
+    .balance-box small {
+      opacity: 0.85;
+    }
+
+    .insurance-info {
+      display: grid;
+      gap: 10px;
+      margin: 20px 0;
+      color: var(--muted);
+      font-size: 0.91rem;
+    }
+
+    .insurance-info div {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .insurance-info strong {
+      color: var(--ink);
+    }
+
+    .appointment-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .appointment-item:last-child {
+      border-bottom: 0;
+    }
+
+    .appointment-date {
+      min-width: 55px;
+      padding: 9px 7px;
+      border-radius: 10px;
+      color: var(--primary-dark);
+      background: var(--primary-light);
+      text-align: center;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .appointment-date small {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .appointment-details {
+      flex: 1;
+    }
+
+    .appointment-details strong,
+    .appointment-details span {
+      display: block;
+    }
+
+    .appointment-details span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .quick-action {
+      min-height: 105px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--ink);
+      background: #fcfefe;
+      text-align: left;
+      transition: 0.2s ease;
+    }
+
+    .quick-action:hover {
+      border-color: #77d4cb;
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .quick-action .action-icon {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 1.4rem;
+    }
+
+    .quick-action strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .quick-action small {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .primary-button,
+    .secondary-button,
+    .text-button {
+      border-radius: 9px;
+      font-weight: 800;
+      transition: 0.2s ease;
+    }
+
+    .primary-button {
+      padding: 12px 16px;
+      border: 1px solid var(--primary);
+      color: white;
+      background: var(--primary);
+    }
+
+    .primary-button:hover {
+      border-color: var(--primary-dark);
+      background: var(--primary-dark);
+    }
+
+    .secondary-button {
+      padding: 10px 13px;
+      border: 1px solid var(--primary);
+      color: var(--primary-dark);
+      background: white;
+    }
+
+    .secondary-button:hover {
+      color: white;
+      background: var(--primary);
+    }
+
+    .text-button {
+      padding: 8px 0;
+      border: 0;
+      color: var(--primary);
+      background: transparent;
+    }
+
+    .text-button:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    /* Content sections */
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    .empty-state {
+      padding: 40px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(10, 38, 45, 0.57);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: min(100%, 560px);
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .close-modal {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: var(--muted);
+      background: #eef4f5;
+      font-size: 1.25rem;
+    }
+
+    .close-modal:hover {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .modal-note {
+      margin: 0 0 18px;
+      padding: 12px;
+      border-radius: 10px;
+      color: #155e75;
+      background: #e0f2fe;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 16px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #bfd1d7;
+      border-radius: 9px;
+      color: var(--ink);
+      background: white;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 105px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 18px 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px) {
+      .portal-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        padding: 14px 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .patient-summary,
+      .sidebar-help {
+        display: none;
+      }
+
+      .nav-menu {
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .nav-button {
+        width: auto;
+        white-space: nowrap;
+      }
+
+      .history-card,
+      .payment-card,
+      .appointments-card,
+      .quick-actions-card {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar-actions .secure-label {
+        display: none;
+      }
+
+      .page-heading {
+        display: block;
+      }
+
+      .date-label {
+        display: inline-block;
+        margin-top: 16px;
+      }
+
+      .records-table {
+        min-width: 620px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      .quick-actions,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full-width {
+        grid-column: auto;
+      }
+
+      .main-content {
+        padding: 22px 16px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">+</div>
+      <span>CareBridge Medical</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="secure-label">🔒 Secure Patient Portal</span>
+      <button class="logout-button" id="logoutButton" type="button">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="portal-layout">
+    <aside class="sidebar">
+      <div class="patient-summary">
+        <div class="avatar">JD</div>
+        <h2>Jordan Davis</h2>
+        <p>Patient ID: CB-10482</p>
+      </div>
+
+      <nav class="nav-menu" aria-label="Patient portal navigation">
+        <button class="nav-button active" type="button" data-section="dashboard">
+          <span class="nav-icon">⌂</span> Dashboard
+        </button>
+
+        <button class="nav-button" type="button" data-section="history">
+          <span class="nav-icon">▣</span> Medical History
+        </button>
+
+        <button class="nav-button" type="button" data-section="insurance">
+          <span class="nav-icon">◈</span> Insurance & Billing
+        </button>
+
+        <button class="nav-button" type="button" data-section="appointments">
+          <span class="nav-icon">◷</span> Appointments
+        </button>
+
+        <button class="nav-button" type="button" data-section="documents">
+          <span class="nav-icon">▤</span> Documents
+        </button>
+      </nav>
+
+      <div class="sidebar-help">
+        <p><strong>Need assistance?</strong><br />Our support team is here to help.</p>
+        <a href="tel:+15551234567">Call (555) 123-4567</a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="alert" id="successAlert" role="status" aria-live="polite"></div>
+
+      <!-- Dashboard -->
+      <section class="content-section active" id="dashboard">
+        <div class="page-heading">
+          <div>
+            <h1>Welcome back, Jordan</h1>
+            <p>
+              Manage your health information, appointments, insurance details,
+              and account payments in one secure place.
+            </p>
+          </div>
+
+          <div class="date-label" id="currentDate"></div>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="card history-card">
+            <div class="card-title-row">
+              <h2>Recent Medical History</h2>
+              <button class="text-button" type="button" data-section-target="history">
+                View all records →
+              </button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="records-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Visit / Record</th>
+                    <th>Provider</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody id="recentHistoryTable">
+                  <tr>
+                    <td>Sep 12, 2026</td>
+                    <td>Annual wellness examination</td>
+                    <td>Dr. Sarah Nguyen</td>
+                    <td><span class="status-pill status-current">Complete</span></td>
+                  </tr>
+                  <tr>
+                    <td>Jul 29, 2026</td>
+                    <td>Bloodwork and lab results</td>
+                    <td>CareBridge Laboratory</td>
+                    <td><span class="status-pill status-current">Reviewed</span></td>
+                  </tr>
+                  <tr>
+                    <td>May 16, 2026</td>
+                    <td>Medication review</td>
+                    <td>Dr. Sarah Nguyen</td>
+                    <td><span class="status-pill status-review">Follow-up</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card payment-card">
+            <div class="card-title-row">
+              <h2>Insurance & Payment</h2>
+              <span class="status-pill status-current">Active Coverage</span>
+            </div>
+
+            <div class="balance-box">
+              <span>Current patient balance</span>
+              <strong id="currentBalance">$85.00</strong>
+              <small>Payment due October 10, 2026</small>
+            </div>
+
+            <div class="insurance-info">
+              <div>
+                <span>Insurance provider</span>
+                <strong>BlueCross BlueShield</strong>
+              </div>
+              <div>
+                <span>Member ID</span>
+                <strong>BCB-8237-1104</strong>
+              </div>
+              <div>
+                <span>Primary plan</span>
+                <strong>PPO Preferred</strong>
+              </div>
+            </div>
+
+            <button class="primary-button" type="button" id="openPaymentModal">
+              Pay Insurance Balance
+            </button>
+          </article>
+
+          <article class="card appointments-card">
+            <div class="card-title-row">
+              <h2>Upcoming Appointments</h2>
+              <button class="text-button" type="button" id="scheduleAppointment">
+                Schedule appointment →
+              </button>
+            </div>
+
+            <div class="appointment-item">
+              <div class="appointment-date">
+                28
+                <small>Sep</small>
+              </div>
+              <div class="appointment-details">
+                <strong>Primary Care Follow-up</strong>
+                <span>10:30 AM · Dr. Sarah Nguyen · CareBridge Main Clinic</span>
+              </div>
+              <button class="secondary-button" type="button" id="appointmentDetails">
+                Details
+              </button>
+            </div>
+
+            <div class="appointment-item">
+              <div class="appointment-date">
+                14
+                <small>Oct</small>
+              </div>
+              <div class="appointment-details">
+                <strong>Physical Therapy Consultation</strong>
+                <span>2:00 PM · Michael Lee, PT · Westside Office</span>
+              </div>
+              <button class="secondary-button" type="button" id="rescheduleAppointment">
+                Reschedule
+              </button>
+            </div>
+          </article>
+
+          <article class="card quick-actions-card">
+            <div class="card-title-row">
+              <h2>Quick Actions</h2>
+            </div>
+
+            <div class="quick-actions">
+              <button class="quick-action" type="button" id="addRecordButton">
+                <span class="action-icon">＋</span>
+                <strong>Add Health Record</strong>
+                <small>Record a visit, medication, allergy, or note.</small>
+              </button>
+
+              <button class="quick-action" type="button" id="payNowButton">
+                <span class="action-icon">▣</span>
+                <strong>Make a Payment</strong>
+                <small>Pay your current balance securely.</small>
+              </button>
+
+              <button class="quick-action" type="button" id="requestRefillButton">
+                <span class="action-icon">↻</span>
+                <strong>Request Refill</strong>
+                <small>Send a refill request to your care team.</small>
+              </button>
+
+              <button class="quick-action" type="button" id="messageProviderButton">
+                <span class="action-icon">✉</span>
+                <strong>Message Provider</strong>
+                <small>Send a non-emergency message to your provider.</small>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Medical History -->
+      <section class="content-section" id="history">
+        <div class="page-heading">
+          <div>
+            <h1>Medical History</h1>
+            <p>Review your recorded visits, medications, lab results, and personal health notes.</p>
+          </div>
+          <button class="primary-button" type="button" id="historyAddButton">Add Health Record</button>
+        </div>
+
+        <article class="card">
+          <div class="table-wrap">
+            <table class="records-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Record type</th>
+                  <th>Description</th>
+                  <th>Provider</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody id="fullHistoryTable">
+                <tr>
+                  <td>Sep 12, 2026</td>
+                  <td>Office Visit</td>
+                  <td>Annual wellness examination</td>
+                  <td>Dr. Sarah Nguyen</td>
+                  <td><button class="text-button view-record" type="button">View</button></td>
+                </tr>
+                <tr>
+                  <td>Jul 29, 2026</td>
+                  <td>Laboratory</td>
+                  <td>Bloodwork and lab results</td>
+                  <td>CareBridge Laboratory</td>
+                  <td><button class="text-button view-record" type="button">View</button></td>
+                </tr>
+                <tr>
+                  <td>May 16, 2026</td>
+                  <td>Medication</td>
+                  <td>Medication review and refill</td>
+                  <td>Dr. Sarah Nguyen</td>
+                  <td><button class="text-button view-record" type="button">View</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- Insurance -->
+      <section class="content-section" id="insurance">
+        <div class="page-heading">
+          <div>
+            <h1>Insurance & Billing</h1>
+            <p>Review coverage, account balances, invoices, and payment activity.</p>
+          </div>
+          <button class="primary-button" type="button" id="insurancePayButton">Pay Balance</button>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="card history-card">
+            <div class="card-title-row">
+              <h2>Current Coverage</h2>
+              <span class="status-pill status-current">Verified</span>
+            </div>
+
+            <div class="insurance-info">
+              <div><span>Insurance carrier</span><strong>BlueCross BlueShield</strong></div>
+              <div><span>Plan</span><strong>PPO Preferred</strong></div>
+              <div><span>Member ID</span><strong>BCB-8237-1104</strong></div>
+              <div><span>Coverage status</span><strong>Active</strong></div>
+            </div>
+          </article>
+
+          <article class="card payment-card">
+            <h2>Patient Balance</h2>
+            <div class="balance-box" style="margin-top: 18px;">
+              <span>Amount currently due</span>
+              <strong id="insurancePageBalance">$85.00</strong>
+              <small>For services after insurance processing</small>
+            </div>
+            <div style="margin-top: 18px;">
+              <button class="primary-button" type="button" id="insurancePayNowButton">
+                Make a Secure Payment
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Appointments -->
+      <section class="content-section" id="appointments">
+        <div class="page-heading">
+          <div>
+            <h1>Appointments</h1>
+            <p>View upcoming visits and request appointment changes.</p>
+          </div>
+          <button class="primary-button" type="button" id="appointmentsScheduleButton">
+            Schedule Appointment
+          </button>
+        </div>
+
+        <article class="card">
+          <div class="appointment-item">
+            <div class="appointment-date">28<small>Sep</small></div>
+            <div class="appointment-details">
+              <strong>Primary Care Follow-up</strong>
+              <span>10:30 AM · Dr. Sarah Nguyen · CareBridge Main Clinic</span>
+            </div>
+            <button class="secondary-button" type="button" id="appointmentDetails2">View Details</button>
+          </div>
+
+          <div class="appointment-item">
+            <div class="appointment-date">14<small>Oct</small></div>
+            <div class="appointment-details">
+              <strong>Physical Therapy Consultation</strong>
+              <span>2:00 PM · Michael Lee, PT · Westside Office</span>
+            </div>
+            <button class="secondary-button" type="button" id="rescheduleAppointment2">Reschedule</button>
+          </div>
+        </article>
+      </section>
+
+      <!-- Documents -->
+      <section class="content-section" id="documents">
+        <div class="page-heading">
+          <div>
+            <h1>Documents</h1>
+            <p>Access statements, visit summaries, care instructions, and insurance documents.</p>
+          </div>
+        </div>
+
+        <article class="card">
+          <div class="empty-state">
+            <h2>Document center</h2>
+            <p>
+              Connect this section to your secure document storage system to display
+              clinical summaries, invoices, and downloadable forms.
+            </p>
+            <button class="primary-button" type="button" id="documentDemoButton">
+              View Sample Document
+            </button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add Record Modal -->
+  <div class="modal-backdrop" id="recordModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="recordModalTitle">
+      <div class="modal-header">
+        <h2 id="recordModalTitle">Add Health Record</h2>
+        <button class="close-modal" type="button" data-close-modal="recordModal" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <form id="recordForm">
+        <div class="modal-body">
+          <p class="modal-note">
+            Demo only. A live portal should submit this information to an authenticated,
+            encrypted backend with appropriate authorization and audit logging.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="recordDate">Date</label>
+              <input id="recordDate" name="recordDate" type="date" required />
+            </div>
+
+            <div class="form-group">
+              <label for="recordType">Record Type</label>
+              <select id="recordType" name="recordType" required>
+                <option value="">Select type</option>
+                <option value="Office Visit">Office Visit</option>
+                <option value="Medication">Medication</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Lab Result">Lab Result</option>
+                <option value="Personal Note">Personal Note</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="recordDescription">Description</label>
+              <textarea
+                id="recordDescription"
+                name="recordDescription"
+                placeholder="Enter a short health-record description"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="recordProvider">Provider / Facility</label>
+              <input
+                id="recordProvider"
+                name="recordProvider"
+                type="text"
+                placeholder="Example: Dr. Sarah Nguyen"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="secondary-button" type="button" data-close-modal="recordModal">
+            Cancel
+          </button>
+          <button class="primary-button" type="submit">Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-backdrop" id="paymentModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+      <div class="modal-header">
+        <h2 id="paymentModalTitle">Make a Payment</h2>
+        <button class="close-modal" type="button" data-close-modal="paymentModal" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <form id="paymentForm">
+        <div class="modal-body">
+          <p class="modal-note">
+            Demo payment form. In production, redirect the patient to a PCI-compliant
+            payment processor or use the processor’s embedded, tokenized payment fields.
+            Do not send card numbers to your own server unless your system is designed
+            and validated for that responsibility.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="paymentAmount">Payment Amount</label>
+              <input
+                id="paymentAmount"
+                name="paymentAmount"
+                type="number"
+                min="1"
+                max="85"
+                step="0.01"
+                value="85.00"
+                required
+              />
+            </div>
+
+            <div class="form-group full-width">
+              <label for="paymentMethod">Payment Method</label>
+              <select id="paymentMethod" name="paymentMethod" required>
+                <option value="Credit or debit card">Credit or debit card</option>
+                <option value="HSA/FSA card">HSA/FSA card</option>
+                <option value="Bank transfer">Bank transfer</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="emailReceipt">Receipt Email</label>
+              <input
+                id="emailReceipt"
+                name="emailReceipt"
+                type="email"
+                value="jordan.davis@example.com"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="secondary-button" type="button" data-close-modal="paymentModal">
+            Cancel
+          </button>
+          <button class="primary-button" type="submit">Submit Demo Payment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Information Modal -->
+  <div class="modal-backdrop" id="infoModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <div class="modal-header">
+        <h2 id="infoModalTitle">Portal Message</h2>
+        <button class="close-modal" type="button" data-close-modal="infoModal" aria-label="Close">
+          ×
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p id="infoModalText" style="margin: 0; line-height: 1.6; color: #475569;"></p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="primary-button" type="button" data-close-modal="infoModal">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const successAlert = document.getElementById("successAlert");
+    const recordModal = document.getElementById("recordModal");
+    const paymentModal = document.getElementById("paymentModal");
+    const infoModal = document.getElementById("infoModal");
+    const infoModalTitle = document.getElementById("infoModalTitle");
+    const infoModalText = document.getElementById("infoModalText");
+
+    let currentBalance = 85.0;
+
+    document.getElementById("currentDate").textContent =
+      new Intl.DateTimeFormat("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      }).format(new Date());
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(value);
+    }
+
+    function showAlert(message) {
+      successAlert.textContent = message;
+      successAlert.classList.add("show");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+      setTimeout(() => {
+        successAlert.classList.remove("show");
+      }, 5000);
+    }
+
+    function openModal(modal) {
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function showInfo(title, message) {
+      infoModalTitle.textContent = title;
+      infoModalText.textContent = message;
+      openModal(infoModal);
+    }
+
+    function changeSection(sectionId) {
+      document.querySelectorAll(".content-section").forEach((section) => {
+        section.classList.remove("active");
+      });
+
+      document.querySelectorAll(".nav-button").forEach((button) => {
+        button.classList.remove("active");
+      });
+
+      document.getElementById(sectionId).classList.add("active");
+
+      const selectedButton = document.querySelector(
+        `.nav-button[data-section="${sectionId}"]`
+      );
+
+      if (selectedButton) {
+        selectedButton.classList.add("active");
+      }
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    function updateBalance() {
+      document.getElementById("currentBalance").textContent =
+        formatCurrency(currentBalance);
+
+      document.getElementById("insurancePageBalance").textContent =
+        formatCurrency(currentBalance);
+
+      document.getElementById("paymentAmount").max = currentBalance.toFixed(2);
+      document.getElementById("paymentAmount").value = currentBalance.toFixed(2);
+    }
+
+    document.querySelectorAll(".nav-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        changeSection(button.dataset.section);
+      });
+    });
+
+    document.querySelectorAll("[data-section-target]").forEach((button) => {
+      button.addEventListener("click", () => {
+        changeSection(button.dataset.sectionTarget);
+      });
+    });
+
+    document.querySelectorAll("[data-close-modal]").forEach((button) => {
+      button.addEventListener("click", () => {
+        closeModal(document.getElementById(button.dataset.closeModal));
+      });
+    });
+
+    document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+      backdrop.addEventListener("click", (event) => {
+        if (event.target === backdrop) {
+          closeModal(backdrop);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        document.querySelectorAll(".modal-backdrop.open").forEach((modal) => {
+          closeModal(modal);
+        });
+      }
+    });
+
+    document.getElementById("openPaymentModal").addEventListener("click", () => {
+      if (currentBalance <= 0) {
+        showInfo("No Balance Due", "Your account currently has no balance due.");
+        return;
+      }
+
+      updateBalance();
+      openModal(paymentModal);
+    });
+
+    document.getElementById("payNowButton").addEventListener("click", () => {
+      if (currentBalance <= 0) {
+        showInfo("No Balance Due", "Your account currently has no balance due.");
+        return;
+      }
+
+      updateBalance();
+      openModal(paymentModal);
+    });
+
+    document.getElementById("insurancePayButton").addEventListener("click", () => {
+      if (currentBalance <= 0) {
+        showInfo("No Balance Due", "Your account currently has no balance due.");
+        return;
+      }
+
+      updateBalance();
+      openModal(paymentModal);
+    });
+
+    document.getElementById("insurancePayNowButton").addEventListener("click", () => {
+      if (currentBalance <= 0) {
+        showInfo("No Balance Due", "Your account currently has no balance due.");
+        return;
+      }
+
+      updateBalance();
+      openModal(paymentModal);
+    });
+
+    document.getElementById("addRecordButton").addEventListener("click", () => {
+      openModal(recordModal);
+    });
+
+    document.getElementById("historyAddButton").addEventListener("click", () => {
+      openModal(recordModal);
+    });
+
+    document.getElementById("recordForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const recordDate = new Date(formData.get("recordDate") + "T12:00:00");
+      const formattedDate = new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }).format(recordDate);
+
+      const type = formData.get("recordType");
+      const description = formData.get("recordDescription");
+      const provider = formData.get("recordProvider");
+
+      const newHistoryRow = `
+        <tr>
+          <td>${formattedDate}</td>
+          <td>${type}</td>
+          <td>${description}</td>
+          <td>${provider}</td>
+          <td><button class="text-button view-record" type="button">View</button></td>
+        </tr>
+      `;
+
+      const newDashboardRow = `
+        <tr>
+          <td>${formattedDate}</td>
+          <td>${description}</td>
+          <td>${provider}</td>
+          <td><span class="status-pill status-review">New</span></td>
+        </tr>
+      `;
+
+      document
+        .getElementById("fullHistoryTable")
+        .insertAdjacentHTML("afterbegin", newHistoryRow);
+
+      document
+        .getElementById("recentHistoryTable")
+        .insertAdjacentHTML("afterbegin", newDashboardRow);
+
+      event.target.reset();
+      closeModal(recordModal);
+      showAlert("Your demo health record was added successfully.");
+    });
+
+    document.getElementById("paymentForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const amount = Number(document.getElementById("paymentAmount").value);
+
+      if (!amount || amount <= 0) {
+        showInfo("Payment Error", "Enter a valid payment amount greater than $0.00.");
+        return;
+      }
+
+      if (amount > currentBalance) {
+        showInfo(
+          "Payment Error",
+          `Your payment cannot exceed the current balance of ${formatCurrency(currentBalance)}.`
+        );
+        return;
+      }
+
+      currentBalance = Number((currentBalance - amount).toFixed(2));
+      updateBalance();
+
+      closeModal(paymentModal);
+      showAlert(
+        `Demo payment of ${formatCurrency(amount)} recorded. Your remaining balance is ${formatCurrency(currentBalance)}.`
+      );
+
+      event.target.reset();
+      document.getElementById("paymentAmount").value = currentBalance.toFixed(2);
+    });
+
+    document.addEventListener("click", (event) => {
+      if (event.target.classList.contains("view-record")) {
+        showInfo(
+          "Health Record Preview",
+          "This is a sample record view. Connect this button to your authenticated patient-record API to retrieve authorized record details."
+        );
+      }
+    });
+
+    document.getElementById("scheduleAppointment").addEventListener("click", () => {
+      showInfo(
+        "Schedule Appointment",
+        "Connect this button to your scheduling platform or appointment-request workflow."
+      );
+    });
+
+    document.getElementById("appointmentsScheduleButton").addEventListener("click", () => {
+      showInfo(
+        "Schedule Appointment",
+        "Connect this button to your scheduling platform or appointment-request workflow."
+      );
+    });
+
+    document.getElementById("appointmentDetails").addEventListener("click", () => {
+      showInfo(
+        "Appointment Details",
+        "Primary Care Follow-up on September 28, 2026 at 10:30 AM with Dr. Sarah Nguyen."
+      );
+    });
+
+    document.getElementById("appointmentDetails2").addEventListener("click", () => {
+      showInfo(
+        "Appointment Details",
+        "Primary Care Follow-up on September 28, 2026 at 10:30 AM with Dr. Sarah Nguyen."
+      );
+    });
+
+    document.getElementById("rescheduleAppointment").addEventListener("click", () => {
+      showInfo(
+        "Reschedule Request",
+        "Your demo rescheduling request is ready. Connect this workflow to your practice scheduling system."
+      );
+    });
+
+    document.getElementById("rescheduleAppointment2").addEventListener("click", () => {
+      showInfo(
+        "Reschedule Request",
+        "Your demo rescheduling request is ready. Connect this workflow to your practice scheduling system."
+      );
+    });
+
+    document.getElementById("requestRefillButton").addEventListener("click", () => {
+      showInfo(
+        "Refill Request",
+        "Your refill-request feature should collect the medication, pharmacy, and relevant patient verification details through your secure backend."
+      );
+    });
+
+    document.getElementById("messageProviderButton").addEventListener("click", () => {
+      showInfo(
+        "Message Provider",
+        "For emergencies, patients should call 911 or local emergency services. Connect non-emergency messaging to your secure communications platform."
+      );
+    });
+
+    document.getElementById("documentDemoButton").addEventListener("click", () => {
+      showInfo(
+        "Sample Document",
+        "Connect this area to secure document storage with authenticated download permissions and access logging."
+      );
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", () => {
+      showInfo(
+        "Sign Out",
+        "Demo only: connect this button to your server-side logout route and invalidate the user session securely."
+      );
+    });
+
+    updateBalance();
+  </script>
+</body>
+</html>
