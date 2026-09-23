@@ -5,28 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="Secure patient portal design for medical history and insurance payments."
+    content="CareBridge Medical provides compassionate primary care, family medicine, wellness visits, and telehealth."
   />
-  <title>CareBridge Medical | Patient Portal</title>
+  <title>CareBridge Medical | Your Health, Our Priority</title>
 
   <style>
     :root {
-      --primary: #0f766e;
-      --primary-dark: #0b5e58;
-      --primary-light: #dff7f4;
-      --secondary: #1d4ed8;
-      --ink: #16323c;
-      --muted: #64748b;
-      --line: #dbe5ea;
-      --surface: #ffffff;
-      --background: #f3f8fa;
-      --success: #15803d;
-      --success-bg: #dcfce7;
-      --warning: #b45309;
-      --warning-bg: #fef3c7;
-      --danger: #b91c1c;
-      --danger-bg: #fee2e2;
-      --shadow: 0 12px 30px rgba(15, 70, 76, 0.09);
+      --primary: #0d766e;
+      --primary-dark: #075e58;
+      --primary-light: #e2f7f4;
+      --navy: #153747;
+      --text: #334d58;
+      --muted: #67808a;
+      --white: #ffffff;
+      --off-white: #f5fafb;
+      --border: #d8e6e9;
+      --gold: #f3b643;
+      --shadow: 0 14px 35px rgba(18, 68, 75, 0.12);
       --radius: 18px;
     }
 
@@ -40,600 +35,580 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
+      color: var(--text);
+      background: var(--white);
       font-family: Arial, Helvetica, sans-serif;
-      color: var(--ink);
-      background: var(--background);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     button,
     input,
-    select,
-    textarea {
+    textarea,
+    select {
       font: inherit;
     }
 
-    button {
-      cursor: pointer;
+    /* Reusable layout */
+    .container {
+      width: min(1140px, 90%);
+      margin: 0 auto;
     }
 
-    /* Header */
+    .section {
+      padding: 90px 0;
+    }
+
+    .section-label {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      max-width: 680px;
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.18;
+    }
+
+    .section-description {
+      max-width: 650px;
+      margin: 16px 0 0;
+      color: var(--muted);
+    }
+
+    /* Buttons */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 20px;
+      border: 2px solid var(--primary);
+      border-radius: 9px;
+      color: var(--white);
+      background: var(--primary);
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .button:hover {
+      border-color: var(--primary-dark);
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .button-light {
+      border-color: var(--white);
+      color: var(--white);
+      background: transparent;
+    }
+
+    .button-light:hover {
+      border-color: var(--white);
+      color: var(--primary-dark);
+      background: var(--white);
+    }
+
+    .button-outline {
+      color: var(--primary);
+      background: transparent;
+    }
+
+    .button-outline:hover {
+      color: var(--white);
+      background: var(--primary);
+    }
+
+    /* Top information bar */
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
+      padding: 10px 0;
+      color: #d6f4ef;
+      background: var(--navy);
+      font-size: 0.86rem;
+    }
+
+    .topbar-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-      padding: 16px clamp(18px, 4vw, 60px);
-      color: white;
-      background: var(--primary);
-      box-shadow: 0 2px 14px rgba(7, 62, 58, 0.18);
+      gap: 18px;
+    }
+
+    .topbar-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    .topbar a:hover {
+      color: var(--white);
+    }
+
+    /* Header and nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      min-height: 76px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: 0.2px;
+      gap: 11px;
+      color: var(--navy);
+      font-size: 1.2rem;
+      font-weight: 850;
     }
 
-    .brand-mark {
+    .brand-icon {
       display: grid;
       width: 40px;
       height: 40px;
       place-items: center;
-      border-radius: 12px;
-      color: var(--primary);
-      background: white;
-      font-size: 1.45rem;
+      border-radius: 11px;
+      color: var(--white);
+      background: var(--primary);
+      font-size: 1.5rem;
       font-weight: 900;
     }
 
-    .topbar-actions {
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 25px;
+      color: var(--navy);
       font-size: 0.93rem;
+      font-weight: 750;
     }
 
-    .secure-label {
-      padding: 8px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .logout-button {
-      padding: 9px 14px;
-      border: 1px solid white;
-      border-radius: 9px;
+    .nav-links a:not(.button):hover {
       color: var(--primary);
-      background: white;
-      font-weight: 700;
     }
 
-    .logout-button:hover {
-      color: white;
-      background: transparent;
-    }
-
-    /* Layout */
-    .portal-layout {
-      display: grid;
-      grid-template-columns: 255px minmax(0, 1fr);
-      min-height: calc(100vh - 72px);
-    }
-
-    .sidebar {
-      padding: 28px 18px;
-      border-right: 1px solid var(--line);
-      background: white;
-    }
-
-    .patient-summary {
-      padding: 18px;
-      margin-bottom: 24px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      text-align: center;
-      background: #fbfefe;
-    }
-
-    .avatar {
-      display: grid;
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 12px;
-      place-items: center;
-      border-radius: 50%;
-      color: white;
-      background: linear-gradient(135deg, var(--primary), #23a49b);
-      font-size: 1.35rem;
-      font-weight: 800;
-    }
-
-    .patient-summary h2 {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    .patient-summary p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 0.83rem;
-    }
-
-    .nav-menu {
-      display: grid;
-      gap: 8px;
-    }
-
-    .nav-button {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      padding: 13px 14px;
-      border: 0;
-      border-radius: 10px;
-      color: #3d5962;
-      background: transparent;
-      text-align: left;
-      font-weight: 700;
-      transition: 0.2s ease;
-    }
-
-    .nav-button:hover,
-    .nav-button.active {
-      color: var(--primary-dark);
-      background: var(--primary-light);
-    }
-
-    .nav-icon {
-      width: 22px;
-      text-align: center;
+    .mobile-menu-button {
+      display: none;
+      padding: 8px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--navy);
+      background: var(--white);
       font-size: 1.1rem;
+      cursor: pointer;
     }
 
-    .sidebar-help {
-      margin-top: 30px;
-      padding: 16px;
-      border-radius: 14px;
-      color: white;
-      background: #164e63;
+    /* Hero */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 95px 0;
+      color: var(--white);
+      background:
+        radial-gradient(circle at 88% 12%, rgba(99, 227, 211, 0.35), transparent 30%),
+        linear-gradient(125deg, #0b5f61 0%, #0f766e 52%, #0d4f67 100%);
     }
 
-    .sidebar-help p {
-      margin: 0 0 10px;
-      font-size: 0.85rem;
-      line-height: 1.45;
+    .hero::after {
+      position: absolute;
+      right: -160px;
+      bottom: -220px;
+      width: 560px;
+      height: 560px;
+      border: 50px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      content: "";
     }
 
-    .sidebar-help a {
-      color: #bff8f0;
-      font-size: 0.87rem;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    /* Main */
-    .main-content {
-      padding: clamp(22px, 4vw, 48px);
-    }
-
-    .page-heading {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .page-heading h1 {
-      margin: 0;
-      font-size: clamp(1.65rem, 3vw, 2.25rem);
-    }
-
-    .page-heading p {
-      max-width: 670px;
-      margin: 8px 0 0;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .date-label {
-      padding: 11px 14px;
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      color: var(--muted);
-      background: white;
-      font-size: 0.86rem;
-      white-space: nowrap;
-    }
-
-    .alert {
-      display: none;
-      margin-bottom: 22px;
-      padding: 14px 16px;
-      border: 1px solid #86efac;
-      border-radius: 12px;
-      color: #166534;
-      background: var(--success-bg);
-      font-weight: 700;
-    }
-
-    .alert.show {
-      display: block;
-    }
-
-    .dashboard-grid {
+    .hero-content {
+      position: relative;
+      z-index: 1;
       display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      padding: 24px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    .card h2,
-    .card h3 {
-      margin: 0;
-    }
-
-    .card-title-row {
-      display: flex;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
+      gap: 60px;
     }
 
-    .card-title-row h2 {
-      font-size: 1.13rem;
-    }
-
-    .history-card {
-      grid-column: span 7;
-    }
-
-    .payment-card {
-      grid-column: span 5;
-    }
-
-    .appointments-card {
-      grid-column: span 7;
-    }
-
-    .quick-actions-card {
-      grid-column: span 5;
-    }
-
-    .records-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .records-table th,
-    .records-table td {
-      padding: 14px 10px;
-      border-bottom: 1px solid var(--line);
-      text-align: left;
-      font-size: 0.91rem;
-    }
-
-    .records-table th {
-      color: var(--muted);
-      font-size: 0.77rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .records-table tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .status-pill {
+    .hero-label {
       display: inline-block;
-      padding: 6px 9px;
-      border-radius: 99px;
-      font-size: 0.75rem;
+      margin-bottom: 16px;
+      color: #b5f4ea;
+      font-size: 0.82rem;
       font-weight: 800;
-    }
-
-    .status-current {
-      color: #166534;
-      background: var(--success-bg);
-    }
-
-    .status-review {
-      color: #92400e;
-      background: var(--warning-bg);
-    }
-
-    .balance-box {
-      padding: 22px;
-      border-radius: 14px;
-      color: white;
-      background: linear-gradient(140deg, var(--secondary), #2563eb);
-    }
-
-    .balance-box span {
-      display: block;
-      opacity: 0.85;
-      font-size: 0.86rem;
-    }
-
-    .balance-box strong {
-      display: block;
-      margin: 6px 0;
-      font-size: 2.2rem;
-    }
-
-    .balance-box small {
-      opacity: 0.85;
-    }
-
-    .insurance-info {
-      display: grid;
-      gap: 10px;
-      margin: 20px 0;
-      color: var(--muted);
-      font-size: 0.91rem;
-    }
-
-    .insurance-info div {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .insurance-info strong {
-      color: var(--ink);
-    }
-
-    .appointment-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .appointment-item:last-child {
-      border-bottom: 0;
-    }
-
-    .appointment-date {
-      min-width: 55px;
-      padding: 9px 7px;
-      border-radius: 10px;
-      color: var(--primary-dark);
-      background: var(--primary-light);
-      text-align: center;
-      font-weight: 800;
-      line-height: 1.15;
-    }
-
-    .appointment-date small {
-      display: block;
-      font-size: 0.7rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
-    .appointment-details {
-      flex: 1;
+    .hero h1 {
+      max-width: 740px;
+      margin: 0;
+      font-size: clamp(2.7rem, 5vw, 4.7rem);
+      line-height: 1.05;
     }
 
-    .appointment-details strong,
-    .appointment-details span {
-      display: block;
+    .hero p {
+      max-width: 620px;
+      margin: 22px 0 30px;
+      color: #defbf7;
+      font-size: 1.08rem;
     }
 
-    .appointment-details span {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
       gap: 12px;
     }
 
-    .quick-action {
-      min-height: 105px;
-      padding: 17px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      color: var(--ink);
-      background: #fcfefe;
-      text-align: left;
-      transition: 0.2s ease;
+    .hero-card {
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.14);
+      backdrop-filter: blur(8px);
     }
 
-    .quick-action:hover {
-      border-color: #77d4cb;
-      background: var(--primary-light);
-      transform: translateY(-2px);
-    }
-
-    .quick-action .action-icon {
-      display: block;
-      margin-bottom: 10px;
-      color: var(--primary);
-      font-size: 1.4rem;
-    }
-
-    .quick-action strong {
-      display: block;
-      font-size: 0.9rem;
-    }
-
-    .quick-action small {
-      display: block;
-      margin-top: 5px;
-      color: var(--muted);
-      line-height: 1.35;
-    }
-
-    .primary-button,
-    .secondary-button,
-    .text-button {
-      border-radius: 9px;
-      font-weight: 800;
-      transition: 0.2s ease;
-    }
-
-    .primary-button {
-      padding: 12px 16px;
-      border: 1px solid var(--primary);
-      color: white;
-      background: var(--primary);
-    }
-
-    .primary-button:hover {
-      border-color: var(--primary-dark);
-      background: var(--primary-dark);
-    }
-
-    .secondary-button {
-      padding: 10px 13px;
-      border: 1px solid var(--primary);
-      color: var(--primary-dark);
-      background: white;
-    }
-
-    .secondary-button:hover {
-      color: white;
-      background: var(--primary);
-    }
-
-    .text-button {
-      padding: 8px 0;
-      border: 0;
-      color: var(--primary);
-      background: transparent;
-    }
-
-    .text-button:hover {
-      color: var(--primary-dark);
-      text-decoration: underline;
-    }
-
-    /* Content sections */
-    .content-section {
-      display: none;
-    }
-
-    .content-section.active {
-      display: block;
-    }
-
-    .empty-state {
-      padding: 40px 20px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    /* Modal */
-    .modal-backdrop {
-      position: fixed;
-      z-index: 100;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(10, 38, 45, 0.57);
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal {
-      width: min(100%, 560px);
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 18px;
-      background: white;
-      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.28);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .modal-header h2 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
-
-    .close-modal {
-      display: grid;
-      width: 34px;
-      height: 34px;
-      place-items: center;
-      border: 0;
-      border-radius: 50%;
-      color: var(--muted);
-      background: #eef4f5;
+    .hero-card h2 {
+      margin: 0 0 18px;
       font-size: 1.25rem;
     }
 
-    .close-modal:hover {
-      color: var(--danger);
-      background: var(--danger-bg);
+    .quick-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .modal-body {
-      padding: 24px;
+    .quick-detail:last-child {
+      border-bottom: 0;
     }
 
-    .modal-note {
-      margin: 0 0 18px;
-      padding: 12px;
-      border-radius: 10px;
-      color: #155e75;
-      background: #e0f2fe;
-      font-size: 0.86rem;
-      line-height: 1.45;
-    }
-
-    .form-grid {
+    .quick-detail-icon {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--primary-dark);
+      background: var(--white);
+      font-size: 1rem;
+    }
+
+    .quick-detail strong,
+    .quick-detail span {
+      display: block;
+    }
+
+    .quick-detail strong {
+      font-size: 0.91rem;
+    }
+
+    .quick-detail span {
+      margin-top: 2px;
+      color: #d7f8f3;
+      font-size: 0.84rem;
+    }
+
+    /* Trust strip */
+    .trust-strip {
+      border-bottom: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .trust-content {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .trust-item {
+      padding: 25px 20px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .trust-item:last-child {
+      border-right: 0;
+    }
+
+    .trust-item strong {
+      display: block;
+      color: var(--primary);
+      font-size: 1.45rem;
+    }
+
+    .trust-item span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    /* Services */
+    .services {
+      background: var(--off-white);
+    }
+
+    .section-intro {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .service-card {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--white);
+      transition: 0.2s ease;
+    }
+
+    .service-card:hover {
+      border-color: #80d5cb;
+      box-shadow: var(--shadow);
+      transform: translateY(-5px);
+    }
+
+    .service-icon {
+      display: grid;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 18px;
+      place-items: center;
+      border-radius: 14px;
+      color: var(--primary);
+      background: var(--primary-light);
+      font-size: 1.55rem;
+    }
+
+    .service-card h3 {
+      margin: 0 0 9px;
+      color: var(--navy);
+      font-size: 1.16rem;
+    }
+
+    .service-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    /* About */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .about-visual {
+      position: relative;
+      min-height: 405px;
+      border-radius: 24px;
+      background:
+        linear-gradient(145deg, rgba(8, 110, 103, 0.87), rgba(28, 159, 147, 0.82)),
+        #0f766e;
+      overflow: hidden;
+    }
+
+    .about-visual::before,
+    .about-visual::after {
+      position: absolute;
+      border: 30px solid rgba(255, 255, 255, 0.13);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .about-visual::before {
+      top: -115px;
+      left: -105px;
+      width: 300px;
+      height: 300px;
+    }
+
+    .about-visual::after {
+      right: -85px;
+      bottom: -110px;
+      width: 260px;
+      height: 260px;
+    }
+
+    .about-quote {
+      position: absolute;
+      z-index: 1;
+      right: 28px;
+      bottom: 28px;
+      left: 28px;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 15px;
+      color: var(--white);
+      background: rgba(8, 64, 67, 0.27);
+      backdrop-filter: blur(7px);
+    }
+
+    .about-quote p {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .about-quote span {
+      color: #d0f8f2;
+      font-size: 0.86rem;
+    }
+
+    .about-content p {
+      color: var(--muted);
+    }
+
+    .check-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 26px 0 30px;
+      list-style: none;
+    }
+
+    .check-list li {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .check-list li::before {
+      display: inline-grid;
+      width: 22px;
+      height: 22px;
+      margin-right: 10px;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--white);
+      background: var(--primary);
+      content: "✓";
+      font-size: 0.78rem;
+    }
+
+    /* Call to action */
+    .cta {
+      padding: 0 0 90px;
+    }
+
+    .cta-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+      padding: 48px;
+      border-radius: 22px;
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .cta-box h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.7rem, 3vw, 2.45rem);
+    }
+
+    .cta-box p {
+      max-width: 670px;
+      margin: 0;
+      color: #c9e3e7;
+    }
+
+    /* Contact */
+    .contact-section {
+      background: var(--off-white);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 50px;
+      align-items: start;
+    }
+
+    .contact-details {
+      display: grid;
       gap: 16px;
+      margin-top: 30px;
+    }
+
+    .contact-detail {
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--white);
+    }
+
+    .contact-detail strong,
+    .contact-detail span {
+      display: block;
+    }
+
+    .contact-detail strong {
+      color: var(--navy);
+      font-size: 0.91rem;
+    }
+
+    .contact-detail span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .contact-form {
+      padding: 30px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
     }
 
     .form-group {
       display: grid;
       gap: 7px;
-      margin-bottom: 16px;
-    }
-
-    .form-group.full-width {
-      grid-column: 1 / -1;
+      margin-bottom: 15px;
     }
 
     .form-group label {
+      color: var(--navy);
       font-size: 0.86rem;
       font-weight: 800;
     }
@@ -642,16 +617,16 @@
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #bfd1d7;
-      border-radius: 9px;
-      color: var(--ink);
-      background: white;
+      padding: 12px;
+      border: 1px solid #c8d9dc;
+      border-radius: 8px;
+      color: var(--text);
+      background: var(--white);
       outline: none;
     }
 
     .form-group textarea {
-      min-height: 105px;
+      min-height: 104px;
       resize: vertical;
     }
 
@@ -659,945 +634,625 @@
     .form-group select:focus,
     .form-group textarea:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+      box-shadow: 0 0 0 3px rgba(13, 118, 110, 0.14);
     }
 
-    .modal-footer {
+    .privacy-note {
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .success-message {
+      display: none;
+      margin-top: 16px;
+      padding: 13px;
+      border-radius: 8px;
+      color: #166534;
+      background: #dcfce7;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      padding: 45px 0 22px;
+      color: #c5dce0;
+      background: #102f3d;
+    }
+
+    .footer-grid {
       display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 18px 24px;
-      border-top: 1px solid var(--line);
+      justify-content: space-between;
+      gap: 28px;
+      padding-bottom: 30px;
     }
 
-    .hidden {
-      display: none !important;
+    .footer-brand {
+      color: var(--white);
     }
 
-    /* Responsive */
-    @media (max-width: 980px) {
-      .portal-layout {
+    .footer-brand p {
+      max-width: 350px;
+      margin: 12px 0 0;
+      color: #bbd4d9;
+      font-size: 0.9rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .footer-links a:hover {
+      color: var(--white);
+    }
+
+    .copyright {
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      color: #a9c2c7;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 900px) {
+      .hero-content,
+      .about-grid,
+      .contact-grid {
         grid-template-columns: 1fr;
       }
 
-      .sidebar {
-        padding: 14px 18px;
+      .hero-content {
+        gap: 38px;
+      }
+
+      .about-grid {
+        gap: 40px;
+      }
+
+      .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .trust-content {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .trust-item:nth-child(2) {
         border-right: 0;
-        border-bottom: 1px solid var(--line);
       }
 
-      .patient-summary,
-      .sidebar-help {
-        display: none;
-      }
-
-      .nav-menu {
-        display: flex;
-        overflow-x: auto;
-      }
-
-      .nav-button {
-        width: auto;
-        white-space: nowrap;
-      }
-
-      .history-card,
-      .payment-card,
-      .appointments-card,
-      .quick-actions-card {
-        grid-column: span 12;
+      .trust-item:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--border);
       }
     }
 
-    @media (max-width: 620px) {
-      .topbar-actions .secure-label {
+    @media (max-width: 700px) {
+      .topbar-content {
+        justify-content: center;
+      }
+
+      .topbar-items {
+        justify-content: center;
+      }
+
+      .topbar-items span:first-child {
         display: none;
       }
 
-      .page-heading {
+      .navbar {
+        min-height: 68px;
+      }
+
+      .mobile-menu-button {
         display: block;
       }
 
-      .date-label {
-        display: inline-block;
-        margin-top: 16px;
+      .nav-links {
+        position: absolute;
+        top: 68px;
+        right: 5%;
+        left: 5%;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--white);
+        box-shadow: var(--shadow);
       }
 
-      .records-table {
-        min-width: 620px;
+      .nav-links.open {
+        display: flex;
       }
 
-      .table-wrap {
-        overflow-x: auto;
+      .nav-links a {
+        padding: 12px;
       }
 
-      .quick-actions,
-      .form-grid {
+      .nav-links .button {
+        margin-top: 5px;
+        text-align: center;
+      }
+
+      .section {
+        padding: 65px 0;
+      }
+
+      .hero {
+        padding: 70px 0;
+      }
+
+      .section-intro,
+      .cta-box,
+      .footer-grid {
+        display: block;
+      }
+
+      .section-intro .button {
+        margin-top: 22px;
+      }
+
+      .cta-box {
+        padding: 34px 25px;
+      }
+
+      .cta-box .button {
+        margin-top: 22px;
+      }
+
+      .service-grid,
+      .form-row {
         grid-template-columns: 1fr;
       }
 
-      .form-group.full-width {
-        grid-column: auto;
+      .footer-links {
+        margin-top: 25px;
+      }
+    }
+
+    @media (max-width: 440px) {
+      .brand {
+        font-size: 1.02rem;
       }
 
-      .main-content {
-        padding: 22px 16px;
+      .brand-icon {
+        width: 35px;
+        height: 35px;
       }
 
-      .card {
-        padding: 18px;
+      .trust-content {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-item,
+      .trust-item:nth-child(2) {
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .trust-item:last-child {
+        border-bottom: 0;
+      }
+
+      .hero-actions .button {
+        width: 100%;
       }
     }
   </style>
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark">+</div>
-      <span>CareBridge Medical</span>
+  <div class="topbar">
+    <div class="container topbar-content">
+      <div class="topbar-items">
+        <span>Compassionate care for our community</span>
+        <a href="tel:+15551234567">☎ (555) 123-4567</a>
+        <a href="mailto:hello@carebridgemedical.com">✉ hello@carebridgemedical.com</a>
+      </div>
+      <span>Mon–Fri: 8:00 AM–6:00 PM</span>
     </div>
+  </div>
 
-    <div class="topbar-actions">
-      <span class="secure-label">🔒 Secure Patient Portal</span>
-      <button class="logout-button" id="logoutButton" type="button">Sign Out</button>
+  <header>
+    <div class="container navbar">
+      <a href="#home" class="brand" aria-label="CareBridge Medical home">
+        <span class="brand-icon">+</span>
+        <span>CareBridge Medical</span>
+      </a>
+
+      <button
+        class="mobile-menu-button"
+        id="menuButton"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+
+      <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#contact" class="button">Request Appointment</a>
+      </nav>
     </div>
   </header>
 
-  <div class="portal-layout">
-    <aside class="sidebar">
-      <div class="patient-summary">
-        <div class="avatar">JD</div>
-        <h2>Jordan Davis</h2>
-        <p>Patient ID: CB-10482</p>
-      </div>
-
-      <nav class="nav-menu" aria-label="Patient portal navigation">
-        <button class="nav-button active" type="button" data-section="dashboard">
-          <span class="nav-icon">⌂</span> Dashboard
-        </button>
-
-        <button class="nav-button" type="button" data-section="history">
-          <span class="nav-icon">▣</span> Medical History
-        </button>
-
-        <button class="nav-button" type="button" data-section="insurance">
-          <span class="nav-icon">◈</span> Insurance & Billing
-        </button>
-
-        <button class="nav-button" type="button" data-section="appointments">
-          <span class="nav-icon">◷</span> Appointments
-        </button>
-
-        <button class="nav-button" type="button" data-section="documents">
-          <span class="nav-icon">▤</span> Documents
-        </button>
-      </nav>
-
-      <div class="sidebar-help">
-        <p><strong>Need assistance?</strong><br />Our support team is here to help.</p>
-        <a href="tel:+15551234567">Call (555) 123-4567</a>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <div class="alert" id="successAlert" role="status" aria-live="polite"></div>
-
-      <!-- Dashboard -->
-      <section class="content-section active" id="dashboard">
-        <div class="page-heading">
-          <div>
-            <h1>Welcome back, Jordan</h1>
-            <p>
-              Manage your health information, appointments, insurance details,
-              and account payments in one secure place.
-            </p>
-          </div>
-
-          <div class="date-label" id="currentDate"></div>
-        </div>
-
-        <div class="dashboard-grid">
-          <article class="card history-card">
-            <div class="card-title-row">
-              <h2>Recent Medical History</h2>
-              <button class="text-button" type="button" data-section-target="history">
-                View all records →
-              </button>
-            </div>
-
-            <div class="table-wrap">
-              <table class="records-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Visit / Record</th>
-                    <th>Provider</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-
-                <tbody id="recentHistoryTable">
-                  <tr>
-                    <td>Sep 12, 2026</td>
-                    <td>Annual wellness examination</td>
-                    <td>Dr. Sarah Nguyen</td>
-                    <td><span class="status-pill status-current">Complete</span></td>
-                  </tr>
-                  <tr>
-                    <td>Jul 29, 2026</td>
-                    <td>Bloodwork and lab results</td>
-                    <td>CareBridge Laboratory</td>
-                    <td><span class="status-pill status-current">Reviewed</span></td>
-                  </tr>
-                  <tr>
-                    <td>May 16, 2026</td>
-                    <td>Medication review</td>
-                    <td>Dr. Sarah Nguyen</td>
-                    <td><span class="status-pill status-review">Follow-up</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-
-          <article class="card payment-card">
-            <div class="card-title-row">
-              <h2>Insurance & Payment</h2>
-              <span class="status-pill status-current">Active Coverage</span>
-            </div>
-
-            <div class="balance-box">
-              <span>Current patient balance</span>
-              <strong id="currentBalance">$85.00</strong>
-              <small>Payment due October 10, 2026</small>
-            </div>
-
-            <div class="insurance-info">
-              <div>
-                <span>Insurance provider</span>
-                <strong>BlueCross BlueShield</strong>
-              </div>
-              <div>
-                <span>Member ID</span>
-                <strong>BCB-8237-1104</strong>
-              </div>
-              <div>
-                <span>Primary plan</span>
-                <strong>PPO Preferred</strong>
-              </div>
-            </div>
-
-            <button class="primary-button" type="button" id="openPaymentModal">
-              Pay Insurance Balance
-            </button>
-          </article>
-
-          <article class="card appointments-card">
-            <div class="card-title-row">
-              <h2>Upcoming Appointments</h2>
-              <button class="text-button" type="button" id="scheduleAppointment">
-                Schedule appointment →
-              </button>
-            </div>
-
-            <div class="appointment-item">
-              <div class="appointment-date">
-                28
-                <small>Sep</small>
-              </div>
-              <div class="appointment-details">
-                <strong>Primary Care Follow-up</strong>
-                <span>10:30 AM · Dr. Sarah Nguyen · CareBridge Main Clinic</span>
-              </div>
-              <button class="secondary-button" type="button" id="appointmentDetails">
-                Details
-              </button>
-            </div>
-
-            <div class="appointment-item">
-              <div class="appointment-date">
-                14
-                <small>Oct</small>
-              </div>
-              <div class="appointment-details">
-                <strong>Physical Therapy Consultation</strong>
-                <span>2:00 PM · Michael Lee, PT · Westside Office</span>
-              </div>
-              <button class="secondary-button" type="button" id="rescheduleAppointment">
-                Reschedule
-              </button>
-            </div>
-          </article>
-
-          <article class="card quick-actions-card">
-            <div class="card-title-row">
-              <h2>Quick Actions</h2>
-            </div>
-
-            <div class="quick-actions">
-              <button class="quick-action" type="button" id="addRecordButton">
-                <span class="action-icon">＋</span>
-                <strong>Add Health Record</strong>
-                <small>Record a visit, medication, allergy, or note.</small>
-              </button>
-
-              <button class="quick-action" type="button" id="payNowButton">
-                <span class="action-icon">▣</span>
-                <strong>Make a Payment</strong>
-                <small>Pay your current balance securely.</small>
-              </button>
-
-              <button class="quick-action" type="button" id="requestRefillButton">
-                <span class="action-icon">↻</span>
-                <strong>Request Refill</strong>
-                <small>Send a refill request to your care team.</small>
-              </button>
-
-              <button class="quick-action" type="button" id="messageProviderButton">
-                <span class="action-icon">✉</span>
-                <strong>Message Provider</strong>
-                <small>Send a non-emergency message to your provider.</small>
-              </button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- Medical History -->
-      <section class="content-section" id="history">
-        <div class="page-heading">
-          <div>
-            <h1>Medical History</h1>
-            <p>Review your recorded visits, medications, lab results, and personal health notes.</p>
-          </div>
-          <button class="primary-button" type="button" id="historyAddButton">Add Health Record</button>
-        </div>
-
-        <article class="card">
-          <div class="table-wrap">
-            <table class="records-table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Record type</th>
-                  <th>Description</th>
-                  <th>Provider</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-
-              <tbody id="fullHistoryTable">
-                <tr>
-                  <td>Sep 12, 2026</td>
-                  <td>Office Visit</td>
-                  <td>Annual wellness examination</td>
-                  <td>Dr. Sarah Nguyen</td>
-                  <td><button class="text-button view-record" type="button">View</button></td>
-                </tr>
-                <tr>
-                  <td>Jul 29, 2026</td>
-                  <td>Laboratory</td>
-                  <td>Bloodwork and lab results</td>
-                  <td>CareBridge Laboratory</td>
-                  <td><button class="text-button view-record" type="button">View</button></td>
-                </tr>
-                <tr>
-                  <td>May 16, 2026</td>
-                  <td>Medication</td>
-                  <td>Medication review and refill</td>
-                  <td>Dr. Sarah Nguyen</td>
-                  <td><button class="text-button view-record" type="button">View</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      <!-- Insurance -->
-      <section class="content-section" id="insurance">
-        <div class="page-heading">
-          <div>
-            <h1>Insurance & Billing</h1>
-            <p>Review coverage, account balances, invoices, and payment activity.</p>
-          </div>
-          <button class="primary-button" type="button" id="insurancePayButton">Pay Balance</button>
-        </div>
-
-        <div class="dashboard-grid">
-          <article class="card history-card">
-            <div class="card-title-row">
-              <h2>Current Coverage</h2>
-              <span class="status-pill status-current">Verified</span>
-            </div>
-
-            <div class="insurance-info">
-              <div><span>Insurance carrier</span><strong>BlueCross BlueShield</strong></div>
-              <div><span>Plan</span><strong>PPO Preferred</strong></div>
-              <div><span>Member ID</span><strong>BCB-8237-1104</strong></div>
-              <div><span>Coverage status</span><strong>Active</strong></div>
-            </div>
-          </article>
-
-          <article class="card payment-card">
-            <h2>Patient Balance</h2>
-            <div class="balance-box" style="margin-top: 18px;">
-              <span>Amount currently due</span>
-              <strong id="insurancePageBalance">$85.00</strong>
-              <small>For services after insurance processing</small>
-            </div>
-            <div style="margin-top: 18px;">
-              <button class="primary-button" type="button" id="insurancePayNowButton">
-                Make a Secure Payment
-              </button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- Appointments -->
-      <section class="content-section" id="appointments">
-        <div class="page-heading">
-          <div>
-            <h1>Appointments</h1>
-            <p>View upcoming visits and request appointment changes.</p>
-          </div>
-          <button class="primary-button" type="button" id="appointmentsScheduleButton">
-            Schedule Appointment
-          </button>
-        </div>
-
-        <article class="card">
-          <div class="appointment-item">
-            <div class="appointment-date">28<small>Sep</small></div>
-            <div class="appointment-details">
-              <strong>Primary Care Follow-up</strong>
-              <span>10:30 AM · Dr. Sarah Nguyen · CareBridge Main Clinic</span>
-            </div>
-            <button class="secondary-button" type="button" id="appointmentDetails2">View Details</button>
-          </div>
-
-          <div class="appointment-item">
-            <div class="appointment-date">14<small>Oct</small></div>
-            <div class="appointment-details">
-              <strong>Physical Therapy Consultation</strong>
-              <span>2:00 PM · Michael Lee, PT · Westside Office</span>
-            </div>
-            <button class="secondary-button" type="button" id="rescheduleAppointment2">Reschedule</button>
-          </div>
-        </article>
-      </section>
-
-      <!-- Documents -->
-      <section class="content-section" id="documents">
-        <div class="page-heading">
-          <div>
-            <h1>Documents</h1>
-            <p>Access statements, visit summaries, care instructions, and insurance documents.</p>
-          </div>
-        </div>
-
-        <article class="card">
-          <div class="empty-state">
-            <h2>Document center</h2>
-            <p>
-              Connect this section to your secure document storage system to display
-              clinical summaries, invoices, and downloadable forms.
-            </p>
-            <button class="primary-button" type="button" id="documentDemoButton">
-              View Sample Document
-            </button>
-          </div>
-        </article>
-      </section>
-    </main>
-  </div>
-
-  <!-- Add Record Modal -->
-  <div class="modal-backdrop" id="recordModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="recordModalTitle">
-      <div class="modal-header">
-        <h2 id="recordModalTitle">Add Health Record</h2>
-        <button class="close-modal" type="button" data-close-modal="recordModal" aria-label="Close">
-          ×
-        </button>
-      </div>
-
-      <form id="recordForm">
-        <div class="modal-body">
-          <p class="modal-note">
-            Demo only. A live portal should submit this information to an authenticated,
-            encrypted backend with appropriate authorization and audit logging.
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-content">
+        <div>
+          <span class="hero-label">Trusted medical care in your community</span>
+          <h1>Feel better. Live healthier. We are here for you.</h1>
+          <p>
+            CareBridge Medical delivers thoughtful primary and family care with
+            clear communication, convenient appointments, and a team that puts
+            your needs first.
           </p>
 
-          <div class="form-grid">
+          <div class="hero-actions">
+            <a class="button button-light" href="#contact">Request an Appointment</a>
+            <a class="button button-outline" href="#services">Explore Our Services</a>
+          </div>
+        </div>
+
+        <aside class="hero-card">
+          <h2>Care when you need it</h2>
+
+          <div class="quick-detail">
+            <div class="quick-detail-icon">⌚</div>
+            <div>
+              <strong>Convenient scheduling</strong>
+              <span>Same-day and future appointment requests.</span>
+            </div>
+          </div>
+
+          <div class="quick-detail">
+            <div class="quick-detail-icon">♥</div>
+            <div>
+              <strong>Patient-first approach</strong>
+              <span>Clear answers and personalized care plans.</span>
+            </div>
+          </div>
+
+          <div class="quick-detail">
+            <div class="quick-detail-icon">⌁</div>
+            <div>
+              <strong>Multiple care options</strong>
+              <span>In-person visits, wellness support, and telehealth.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="container trust-content">
+        <div class="trust-item">
+          <strong>10+ Years</strong>
+          <span>Serving local families</span>
+        </div>
+
+        <div class="trust-item">
+          <strong>5,000+</strong>
+          <span>Visits each year</span>
+        </div>
+
+        <div class="trust-item">
+          <strong>6 Days</strong>
+          <span>Convenient availability</span>
+        </div>
+
+        <div class="trust-item">
+          <strong>1 Team</strong>
+          <span>Focused on your health</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="services section" id="services">
+      <div class="container">
+        <div class="section-intro">
+          <div>
+            <span class="section-label">Our Services</span>
+            <h2 class="section-title">Care designed around your life</h2>
+            <p class="section-description">
+              From preventive visits to everyday health concerns, our team
+              provides practical, compassionate care for patients of all ages.
+            </p>
+          </div>
+
+          <a href="#contact" class="button button-outline">Talk With Our Team</a>
+        </div>
+
+        <div class="service-grid">
+          <article class="service-card">
+            <div class="service-icon">🩺</div>
+            <h3>Primary Care</h3>
+            <p>
+              Routine exams, preventive screenings, ongoing health management,
+              and personalized treatment plans.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">♥</div>
+            <h3>Family Medicine</h3>
+            <p>
+              Supportive healthcare for children, adults, and seniors in one
+              familiar and welcoming practice.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✚</div>
+            <h3>Wellness Visits</h3>
+            <p>
+              Annual physicals, health screenings, immunizations, and guidance
+              to help you stay well.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">⌁</div>
+            <h3>Lab Services</h3>
+            <p>
+              Convenient testing and diagnostic support coordinated with your
+              care plan and provider recommendations.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">◷</div>
+            <h3>Same-Day Care</h3>
+            <p>
+              Timely care for non-emergency health concerns when you need help
+              without a long wait.
+            </p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">☏</div>
+            <h3>Telehealth</h3>
+            <p>
+              Virtual appointments that make it easier to connect with your
+              care team from home or work.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container about-grid">
+        <div class="about-visual">
+          <div class="about-quote">
+            <p>“We believe quality healthcare begins with listening.”</p>
+            <span>CareBridge Medical Team</span>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <span class="section-label">Why Choose Us</span>
+          <h2 class="section-title">Modern care with a personal touch</h2>
+          <p>
+            Your health journey is personal. Our clinicians take the time to
+            understand your concerns, explain your options, and help you make
+            informed decisions with confidence.
+          </p>
+
+          <ul class="check-list">
+            <li>Experienced, compassionate medical professionals</li>
+            <li>Convenient appointment-request process</li>
+            <li>Support for insured and self-pay patients</li>
+            <li>Clear communication at every step of your care</li>
+          </ul>
+
+          <a class="button" href="#contact">Get in Touch</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box">
+          <div>
+            <h2>Ready to take the next step toward better health?</h2>
+            <p>
+              Request an appointment today. Our staff will contact you to
+              confirm a time that works for your schedule.
+            </p>
+          </div>
+
+          <a class="button button-light" href="#contact">Request Appointment</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section section" id="contact">
+      <div class="container contact-grid">
+        <div>
+          <span class="section-label">Contact Us</span>
+          <h2 class="section-title">Request your appointment</h2>
+          <p class="section-description">
+            Send a general appointment request, and our team will follow up to
+            confirm availability. For emergencies, call 911 or go to the
+            nearest emergency room.
+          </p>
+
+          <div class="contact-details">
+            <div class="contact-detail">
+              <strong>Visit Our Office</strong>
+              <span>123 Healthway Drive, Houston, TX 77001</span>
+            </div>
+
+            <div class="contact-detail">
+              <strong>Call Us</strong>
+              <span>(555) 123-4567</span>
+            </div>
+
+            <div class="contact-detail">
+              <strong>Office Hours</strong>
+              <span>Monday–Friday: 8:00 AM–6:00 PM · Saturday: 9:00 AM–2:00 PM</span>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form" id="appointmentForm">
+          <div class="form-row">
             <div class="form-group">
-              <label for="recordDate">Date</label>
-              <input id="recordDate" name="recordDate" type="date" required />
-            </div>
-
-            <div class="form-group">
-              <label for="recordType">Record Type</label>
-              <select id="recordType" name="recordType" required>
-                <option value="">Select type</option>
-                <option value="Office Visit">Office Visit</option>
-                <option value="Medication">Medication</option>
-                <option value="Allergy">Allergy</option>
-                <option value="Lab Result">Lab Result</option>
-                <option value="Personal Note">Personal Note</option>
-              </select>
-            </div>
-
-            <div class="form-group full-width">
-              <label for="recordDescription">Description</label>
-              <textarea
-                id="recordDescription"
-                name="recordDescription"
-                placeholder="Enter a short health-record description"
-                required
-              ></textarea>
-            </div>
-
-            <div class="form-group full-width">
-              <label for="recordProvider">Provider / Facility</label>
+              <label for="fullName">Full Name</label>
               <input
-                id="recordProvider"
-                name="recordProvider"
+                id="fullName"
+                name="fullName"
                 type="text"
-                placeholder="Example: Dr. Sarah Nguyen"
+                placeholder="Your full name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="(555) 123-4567"
                 required
               />
             </div>
           </div>
-        </div>
 
-        <div class="modal-footer">
-          <button class="secondary-button" type="button" data-close-modal="recordModal">
-            Cancel
-          </button>
-          <button class="primary-button" type="submit">Save Record</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Payment Modal -->
-  <div class="modal-backdrop" id="paymentModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
-      <div class="modal-header">
-        <h2 id="paymentModalTitle">Make a Payment</h2>
-        <button class="close-modal" type="button" data-close-modal="paymentModal" aria-label="Close">
-          ×
-        </button>
-      </div>
-
-      <form id="paymentForm">
-        <div class="modal-body">
-          <p class="modal-note">
-            Demo payment form. In production, redirect the patient to a PCI-compliant
-            payment processor or use the processor’s embedded, tokenized payment fields.
-            Do not send card numbers to your own server unless your system is designed
-            and validated for that responsibility.
-          </p>
-
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label for="paymentAmount">Payment Amount</label>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email Address</label>
               <input
-                id="paymentAmount"
-                name="paymentAmount"
-                type="number"
-                min="1"
-                max="85"
-                step="0.01"
-                value="85.00"
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
                 required
               />
             </div>
 
-            <div class="form-group full-width">
-              <label for="paymentMethod">Payment Method</label>
-              <select id="paymentMethod" name="paymentMethod" required>
-                <option value="Credit or debit card">Credit or debit card</option>
-                <option value="HSA/FSA card">HSA/FSA card</option>
-                <option value="Bank transfer">Bank transfer</option>
+            <div class="form-group">
+              <label for="service">Service Needed</label>
+              <select id="service" name="service" required>
+                <option value="">Select a service</option>
+                <option value="Primary Care">Primary Care</option>
+                <option value="Family Medicine">Family Medicine</option>
+                <option value="Wellness Visit">Wellness Visit</option>
+                <option value="Lab Services">Lab Services</option>
+                <option value="Same-Day Care">Same-Day Care</option>
+                <option value="Telehealth">Telehealth</option>
               </select>
             </div>
-
-            <div class="form-group full-width">
-              <label for="emailReceipt">Receipt Email</label>
-              <input
-                id="emailReceipt"
-                name="emailReceipt"
-                type="email"
-                value="jordan.davis@example.com"
-                required
-              />
-            </div>
           </div>
+
+          <div class="form-group">
+            <label for="message">General Message</label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Tell us how we can help. Do not include private medical information here."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="button">Send Appointment Request</button>
+
+          <p class="privacy-note">
+            This is a public website contact form. Do not include medical
+            records, insurance details, payment information, or other sensitive
+            health information.
+          </p>
+
+          <div class="success-message" id="successMessage" role="status">
+            Thank you. Your demo appointment request has been received. Connect
+            this form to a secure form service or backend before using it for
+            real inquiries.
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="#home" class="brand footer-brand">
+            <span class="brand-icon">+</span>
+            <span>CareBridge Medical</span>
+          </a>
+
+          <p>
+            Quality care, clear answers, and support for healthier lives.
+          </p>
         </div>
 
-        <div class="modal-footer">
-          <button class="secondary-button" type="button" data-close-modal="paymentModal">
-            Cancel
-          </button>
-          <button class="primary-button" type="submit">Submit Demo Payment</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Information Modal -->
-  <div class="modal-backdrop" id="infoModal" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
-      <div class="modal-header">
-        <h2 id="infoModalTitle">Portal Message</h2>
-        <button class="close-modal" type="button" data-close-modal="infoModal" aria-label="Close">
-          ×
-        </button>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#home">Home</a>
+          <a href="#services">Services</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </nav>
       </div>
 
-      <div class="modal-body">
-        <p id="infoModalText" style="margin: 0; line-height: 1.6; color: #475569;"></p>
-      </div>
-
-      <div class="modal-footer">
-        <button class="primary-button" type="button" data-close-modal="infoModal">Done</button>
+      <div class="copyright">
+        © <span id="year"></span> CareBridge Medical. All rights reserved.
       </div>
     </div>
-  </div>
+  </footer>
 
   <script>
-    const successAlert = document.getElementById("successAlert");
-    const recordModal = document.getElementById("recordModal");
-    const paymentModal = document.getElementById("paymentModal");
-    const infoModal = document.getElementById("infoModal");
-    const infoModalTitle = document.getElementById("infoModalTitle");
-    const infoModalText = document.getElementById("infoModalText");
+    const menuButton = document.getElementById("menuButton");
+    const navLinks = document.getElementById("navLinks");
+    const appointmentForm = document.getElementById("appointmentForm");
+    const successMessage = document.getElementById("successMessage");
 
-    let currentBalance = 85.0;
+    menuButton.addEventListener("click", function () {
+      const isOpen = navLinks.classList.toggle("open");
 
-    document.getElementById("currentDate").textContent =
-      new Intl.DateTimeFormat("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-      }).format(new Date());
+      menuButton.setAttribute("aria-expanded", isOpen);
+      menuButton.textContent = isOpen ? "×" : "☰";
+    });
 
-    function formatCurrency(value) {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD"
-      }).format(value);
-    }
-
-    function showAlert(message) {
-      successAlert.textContent = message;
-      successAlert.classList.add("show");
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-      setTimeout(() => {
-        successAlert.classList.remove("show");
-      }, 5000);
-    }
-
-    function openModal(modal) {
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden", "false");
-    }
-
-    function closeModal(modal) {
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden", "true");
-    }
-
-    function showInfo(title, message) {
-      infoModalTitle.textContent = title;
-      infoModalText.textContent = message;
-      openModal(infoModal);
-    }
-
-    function changeSection(sectionId) {
-      document.querySelectorAll(".content-section").forEach((section) => {
-        section.classList.remove("active");
-      });
-
-      document.querySelectorAll(".nav-button").forEach((button) => {
-        button.classList.remove("active");
-      });
-
-      document.getElementById(sectionId).classList.add("active");
-
-      const selectedButton = document.querySelector(
-        `.nav-button[data-section="${sectionId}"]`
-      );
-
-      if (selectedButton) {
-        selectedButton.classList.add("active");
-      }
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    }
-
-    function updateBalance() {
-      document.getElementById("currentBalance").textContent =
-        formatCurrency(currentBalance);
-
-      document.getElementById("insurancePageBalance").textContent =
-        formatCurrency(currentBalance);
-
-      document.getElementById("paymentAmount").max = currentBalance.toFixed(2);
-      document.getElementById("paymentAmount").value = currentBalance.toFixed(2);
-    }
-
-    document.querySelectorAll(".nav-button").forEach((button) => {
-      button.addEventListener("click", () => {
-        changeSection(button.dataset.section);
+    document.querySelectorAll("#navLinks a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        navLinks.classList.remove("open");
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.textContent = "☰";
       });
     });
 
-    document.querySelectorAll("[data-section-target]").forEach((button) => {
-      button.addEventListener("click", () => {
-        changeSection(button.dataset.sectionTarget);
-      });
-    });
-
-    document.querySelectorAll("[data-close-modal]").forEach((button) => {
-      button.addEventListener("click", () => {
-        closeModal(document.getElementById(button.dataset.closeModal));
-      });
-    });
-
-    document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
-      backdrop.addEventListener("click", (event) => {
-        if (event.target === backdrop) {
-          closeModal(backdrop);
-        }
-      });
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        document.querySelectorAll(".modal-backdrop.open").forEach((modal) => {
-          closeModal(modal);
-        });
-      }
-    });
-
-    document.getElementById("openPaymentModal").addEventListener("click", () => {
-      if (currentBalance <= 0) {
-        showInfo("No Balance Due", "Your account currently has no balance due.");
-        return;
-      }
-
-      updateBalance();
-      openModal(paymentModal);
-    });
-
-    document.getElementById("payNowButton").addEventListener("click", () => {
-      if (currentBalance <= 0) {
-        showInfo("No Balance Due", "Your account currently has no balance due.");
-        return;
-      }
-
-      updateBalance();
-      openModal(paymentModal);
-    });
-
-    document.getElementById("insurancePayButton").addEventListener("click", () => {
-      if (currentBalance <= 0) {
-        showInfo("No Balance Due", "Your account currently has no balance due.");
-        return;
-      }
-
-      updateBalance();
-      openModal(paymentModal);
-    });
-
-    document.getElementById("insurancePayNowButton").addEventListener("click", () => {
-      if (currentBalance <= 0) {
-        showInfo("No Balance Due", "Your account currently has no balance due.");
-        return;
-      }
-
-      updateBalance();
-      openModal(paymentModal);
-    });
-
-    document.getElementById("addRecordButton").addEventListener("click", () => {
-      openModal(recordModal);
-    });
-
-    document.getElementById("historyAddButton").addEventListener("click", () => {
-      openModal(recordModal);
-    });
-
-    document.getElementById("recordForm").addEventListener("submit", (event) => {
+    appointmentForm.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const formData = new FormData(event.target);
-      const recordDate = new Date(formData.get("recordDate") + "T12:00:00");
-      const formattedDate = new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-      }).format(recordDate);
+      successMessage.classList.add("show");
+      appointmentForm.reset();
 
-      const type = formData.get("recordType");
-      const description = formData.get("recordDescription");
-      const provider = formData.get("recordProvider");
-
-      const newHistoryRow = `
-        <tr>
-          <td>${formattedDate}</td>
-          <td>${type}</td>
-          <td>${description}</td>
-          <td>${provider}</td>
-          <td><button class="text-button view-record" type="button">View</button></td>
-        </tr>
-      `;
-
-      const newDashboardRow = `
-        <tr>
-          <td>${formattedDate}</td>
-          <td>${description}</td>
-          <td>${provider}</td>
-          <td><span class="status-pill status-review">New</span></td>
-        </tr>
-      `;
-
-      document
-        .getElementById("fullHistoryTable")
-        .insertAdjacentHTML("afterbegin", newHistoryRow);
-
-      document
-        .getElementById("recentHistoryTable")
-        .insertAdjacentHTML("afterbegin", newDashboardRow);
-
-      event.target.reset();
-      closeModal(recordModal);
-      showAlert("Your demo health record was added successfully.");
+      setTimeout(function () {
+        successMessage.classList.remove("show");
+      }, 7000);
     });
 
-    document.getElementById("paymentForm").addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const amount = Number(document.getElementById("paymentAmount").value);
-
-      if (!amount || amount <= 0) {
-        showInfo("Payment Error", "Enter a valid payment amount greater than $0.00.");
-        return;
-      }
-
-      if (amount > currentBalance) {
-        showInfo(
-          "Payment Error",
-          `Your payment cannot exceed the current balance of ${formatCurrency(currentBalance)}.`
-        );
-        return;
-      }
-
-      currentBalance = Number((currentBalance - amount).toFixed(2));
-      updateBalance();
-
-      closeModal(paymentModal);
-      showAlert(
-        `Demo payment of ${formatCurrency(amount)} recorded. Your remaining balance is ${formatCurrency(currentBalance)}.`
-      );
-
-      event.target.reset();
-      document.getElementById("paymentAmount").value = currentBalance.toFixed(2);
-    });
-
-    document.addEventListener("click", (event) => {
-      if (event.target.classList.contains("view-record")) {
-        showInfo(
-          "Health Record Preview",
-          "This is a sample record view. Connect this button to your authenticated patient-record API to retrieve authorized record details."
-        );
-      }
-    });
-
-    document.getElementById("scheduleAppointment").addEventListener("click", () => {
-      showInfo(
-        "Schedule Appointment",
-        "Connect this button to your scheduling platform or appointment-request workflow."
-      );
-    });
-
-    document.getElementById("appointmentsScheduleButton").addEventListener("click", () => {
-      showInfo(
-        "Schedule Appointment",
-        "Connect this button to your scheduling platform or appointment-request workflow."
-      );
-    });
-
-    document.getElementById("appointmentDetails").addEventListener("click", () => {
-      showInfo(
-        "Appointment Details",
-        "Primary Care Follow-up on September 28, 2026 at 10:30 AM with Dr. Sarah Nguyen."
-      );
-    });
-
-    document.getElementById("appointmentDetails2").addEventListener("click", () => {
-      showInfo(
-        "Appointment Details",
-        "Primary Care Follow-up on September 28, 2026 at 10:30 AM with Dr. Sarah Nguyen."
-      );
-    });
-
-    document.getElementById("rescheduleAppointment").addEventListener("click", () => {
-      showInfo(
-        "Reschedule Request",
-        "Your demo rescheduling request is ready. Connect this workflow to your practice scheduling system."
-      );
-    });
-
-    document.getElementById("rescheduleAppointment2").addEventListener("click", () => {
-      showInfo(
-        "Reschedule Request",
-        "Your demo rescheduling request is ready. Connect this workflow to your practice scheduling system."
-      );
-    });
-
-    document.getElementById("requestRefillButton").addEventListener("click", () => {
-      showInfo(
-        "Refill Request",
-        "Your refill-request feature should collect the medication, pharmacy, and relevant patient verification details through your secure backend."
-      );
-    });
-
-    document.getElementById("messageProviderButton").addEventListener("click", () => {
-      showInfo(
-        "Message Provider",
-        "For emergencies, patients should call 911 or local emergency services. Connect non-emergency messaging to your secure communications platform."
-      );
-    });
-
-    document.getElementById("documentDemoButton").addEventListener("click", () => {
-      showInfo(
-        "Sample Document",
-        "Connect this area to secure document storage with authenticated download permissions and access logging."
-      );
-    });
-
-    document.getElementById("logoutButton").addEventListener("click", () => {
-      showInfo(
-        "Sign Out",
-        "Demo only: connect this button to your server-side logout route and invalidate the user session securely."
-      );
-    });
-
-    updateBalance();
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
